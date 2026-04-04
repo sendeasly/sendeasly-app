@@ -40,9 +40,12 @@ export default function HomeScreen({ navigation }) {
 
       {/* Header */}
       <View style={styles.header}>
-        <View style={styles.avatar}>
-          <Text style={styles.avatarText}>SE</Text>
-        </View>
+        <TouchableOpacity 
+  style={styles.avatar}
+  onPress={() => navigation.navigate('Profile')}
+>
+  <Text style={styles.avatarText}>SE</Text>
+</TouchableOpacity>
         <TouchableOpacity style={styles.bonusKitufe}>
           <Text style={styles.bonusManeno}>€5 🎁</Text>
         </TouchableOpacity>
