@@ -1,15 +1,17 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { CommonActions, useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import {
-    Alert,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
-export default function ProfileScreen({ navigation }) {
+export default function ProfileScreen() {
+  const navigation = useNavigation();
   const [mtumiaji, setMtumiaji] = useState(null);
 
   useEffect(() => {
@@ -33,21 +35,15 @@ export default function ProfileScreen({ navigation }) {
     { id: 6, icon: 'ℹ️', jina: 'Legal Information' },
   ];
 
-  function toka() {
-    Alert.alert(
-      'Log out',
-      'Are you sure you want to log out?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Log out',
-          style: 'destructive',
-          onPress: () => navigation.replace('Landing'),
-        },
-      ]
+  async function toka() {
+    await AsyncStorage.removeItem('mtumiaji');
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: 'Landing' }],
+      })
     );
   }
-
   return (
     <ScrollView style={styles.container}>
 
