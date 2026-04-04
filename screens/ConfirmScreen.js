@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import {
-    Alert,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 export default function ConfirmScreen({ navigation, route }) {
@@ -25,7 +25,7 @@ export default function ConfirmScreen({ navigation, route }) {
   const ada = (parseFloat(kiasi) * 0.02).toFixed(2);
   const jumla = (parseFloat(kiasi) + parseFloat(ada)).toFixed(2);
 
-  async function thibítisha() {
+  async function thibitisha() {
     setInatuma(true);
 
     try {
