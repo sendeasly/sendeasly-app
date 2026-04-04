@@ -40,7 +40,6 @@ export default function LandingScreen({ navigation }) {
       {/* Juu — Logo */}
       <View style={styles.juu}>
         <Image source={require('../assets/logo.png')} style={styles.logo} />
-        <Text style={styles.jinaApp}>SendEasly</Text>
         <View style={styles.offerBadge}>
           <Text style={styles.offerIcon}>❤️</Text>
           <Text style={styles.offerManeno}>No transfer fees on this transfer</Text>
@@ -127,7 +126,7 @@ export default function LandingScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fce4ec',
+    backgroundColor: '#ff7da8',
   },
   juu: {
     alignItems: 'center',
@@ -136,8 +135,8 @@ const styles = StyleSheet.create({
   },
   
   logo: {
-  width: 130,
-  height: 130,
+  width: 200,
+  height: 200,
   resizeMode: 'contain',
   marginBottom: 8,
 },
@@ -156,8 +155,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   offerManeno: {
-    fontSize: 15,
-    color: '#c2185b',
+    fontSize: 19,
+    color: '#000000',
     fontWeight: '600',
   },
   calculatorKadi: {
@@ -210,7 +209,7 @@ const styles = StyleSheet.create({
   },
   mgawanyo: {
     height: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#ff3b3b',
     marginBottom: 16,
   },
   kiwango: {

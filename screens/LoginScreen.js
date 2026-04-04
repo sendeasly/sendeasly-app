@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState } from 'react';
 import {
   Alert,
@@ -33,6 +34,7 @@ export default function LoginScreen({ navigation }) {
       const data = await jibu.json();
 
       if (jibu.ok) {
+        await AsyncStorage.setItem('mtumiaji', JSON.stringify(data.mtumiaji));
         navigation.replace('Main');
       } else {
         Alert.alert('Error', data.kosa);

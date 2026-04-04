@@ -10,6 +10,7 @@ import ConfirmScreen from './screens/ConfirmScreen';
 import HomeScreen from './screens/HomeScreen';
 import LandingScreen from './screens/LandingScreen';
 import LoginScreen from './screens/LoginScreen';
+import ProfileScreen from './screens/ProfileScreen';
 import RecipientScreen from './screens/RecipientScreen';
 import ReferralsScreen from './screens/ReferralsScreen';
 import RegisterScreen from './screens/RegisterScreen';
@@ -79,6 +80,7 @@ function App() {
           <Stack.Screen name="Main" component={MainTabs} />
           <Stack.Screen name="Recipient" component={RecipientScreen} />
           <Stack.Screen name="Confirm" component={ConfirmScreen} />
+          <Stack.Screen name="Profile" component={ProfileScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </GestureHandlerRootView>

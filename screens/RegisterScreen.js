@@ -1,21 +1,22 @@
 import { useState } from 'react';
 import {
-    Alert,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 export default function RegisterScreen({ navigation }) {
-  const [jina, setJina] = useState('');
-  const [email, setEmail] = useState('');
-  const [nywila, setNywila] = useState('');
-  const [nywila2, setNywila2] = useState('');
-  const [inapakia, setInapakia] = useState(false);
-
+    const [jina, setJina] = useState('');
+    const [middleName, setMiddleName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState('');
+    const [nywila, setNywila] = useState('');
+    const [nywila2, setNywila2] = useState('');
+    const [inapakia, setInapakia] = useState(false);
   async function sajili() {
     if (!jina || !email || !nywila || !nywila2) {
       Alert.alert('Kosa', 'Please fill all fields!');
@@ -63,9 +64,6 @@ export default function RegisterScreen({ navigation }) {
 
       {/* Logo sehemu */}
       <View style={styles.juu}>
-        <Text style={styles.logo}>💸</Text>
-        <Text style={styles.jina}>SendEasly</Text>
-        <Text style={styles.kauli}>International Money Transfer</Text>
       </View>
 
       {/* Fomu */}
@@ -73,12 +71,28 @@ export default function RegisterScreen({ navigation }) {
         <Text style={styles.kichwa}>Create account</Text>
         <Text style={styles.maelezo}>Sign up for free today</Text>
 
-        <Text style={styles.lebo}>Full name</Text>
+        <Text style={styles.lebo}>First name</Text>
         <TextInput
           style={styles.ingizo}
-          placeholder="Enter your full name..."
+          placeholder="Enter your first name..."
           value={jina}
           onChangeText={setJina}
+        />
+
+        <Text style={styles.lebo}>Middle name <Text style={styles.optional}>(Optional)</Text></Text>
+        <TextInput
+          style={styles.ingizo}
+          placeholder="Enter your middle name..."
+          value={middleName}
+          onChangeText={setMiddleName}
+        />
+
+        <Text style={styles.lebo}>Last name</Text>
+        <TextInput
+          style={styles.ingizo}
+          placeholder="Enter your last name..."
+          value={lastName}
+          onChangeText={setLastName}
         />
 
         <Text style={styles.lebo}>Email</Text>
