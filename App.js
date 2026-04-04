@@ -8,6 +8,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import ActivityScreen from './screens/ActivityScreen';
 import ConfirmScreen from './screens/ConfirmScreen';
 import HomeScreen from './screens/HomeScreen';
+import LandingScreen from './screens/LandingScreen';
 import LoginScreen from './screens/LoginScreen';
 import RecipientScreen from './screens/RecipientScreen';
 import ReferralsScreen from './screens/ReferralsScreen';
@@ -69,9 +70,10 @@ function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="Login"
+          initialRouteName="Landing"
           screenOptions={{ headerShown: false }}
         >
+          <Stack.Screen name="Landing" component={LandingScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Register" component={RegisterScreen} />
           <Stack.Screen name="Main" component={MainTabs} />
