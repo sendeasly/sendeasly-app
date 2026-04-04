@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import {
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 const viwango = {
@@ -21,7 +21,7 @@ const viwango = {
   AED: 3.67,
 };
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
   const [kiasi, setKiasi] = useState('1');
   const [kutoka, setKutoka] = useState('EUR');
   const [kwenda, setKwenda] = useState('TZS');
@@ -88,9 +88,17 @@ export default function HomeScreen() {
         </Text>
 
         {/* Send Button */}
-        <TouchableOpacity style={styles.sendKitufe}>
-          <Text style={styles.sendManeno}>SEND</Text>
-        </TouchableOpacity>
+        <TouchableOpacity 
+  style={styles.sendKitufe}
+  onPress={() => navigation.navigate('Recipient', {
+    kiasi: kiasi,
+    kutoka: kutoka,
+    kwenda: kwenda,
+    mpokeaji: hesabu(),
+  })}
+>
+  <Text style={styles.sendManeno}>SEND</Text>
+</TouchableOpacity>
 
       </View>
 
