@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   loginKitufe: {
-    backgroundColor: '#f8bbd0',
+    backgroundColor: '#ff0059',
     borderRadius: 30,
     padding: 16,
     alignItems: 'center',
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   loginManeno: {
-    color: '#c2185b',
+    color: '#ffffff',
     fontWeight: 'bold',
     fontSize: 16,
     letterSpacing: 1,

@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 const viwango = {
@@ -38,7 +39,7 @@ export default function LandingScreen({ navigation }) {
 
       {/* Juu — Logo */}
       <View style={styles.juu}>
-        <Text style={styles.logo}>💸</Text>
+        <Image source={require('../assets/logo.png')} style={styles.logo} />
         <Text style={styles.jinaApp}>SendEasly</Text>
         <View style={styles.offerBadge}>
           <Text style={styles.offerIcon}>❤️</Text>
@@ -133,10 +134,13 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingBottom: 24,
   },
+  
   logo: {
-    fontSize: 70,
-    marginBottom: 8,
-  },
+  width: 130,
+  height: 130,
+  resizeMode: 'contain',
+  marginBottom: 8,
+},
   jinaApp: {
     fontSize: 28,
     fontWeight: 'bold',
@@ -242,13 +246,13 @@ const styles = StyleSheet.create({
   },
   signupKitufe: {
     flex: 1,
-    backgroundColor: '#f8bbd0',
+    backgroundColor: '#e91861',
     borderRadius: 30,
     padding: 14,
     alignItems: 'center',
   },
   signupManeno: {
-    color: '#c2185b',
+    color: '#ffffff',
     fontWeight: 'bold',
     fontSize: 15,
   },
