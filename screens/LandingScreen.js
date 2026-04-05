@@ -2,6 +2,7 @@ import { useState } from 'react';
 import {
   Image,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   TextInput,
@@ -21,75 +22,87 @@ const viwango = {
   AED: 3.67,
 };
 
+const bendera = {
+  USD: '🇺🇸',
+  EUR: '🇪🇺',
+  GBP: '🇬🇧',
+  TZS: '🇹🇿',
+  KES: '🇰🇪',
+  UGX: '🇺🇬',
+  ZAR: '🇿🇦',
+  CAD: '🇨🇦',
+  AED: '🇦🇪',
+};
+
 export default function LandingScreen({ navigation }) {
-  const [kiasi, setKiasi] = useState('1');
+  const [kiasi, setKiasi] = useState('1000');
   const [kutoka, setKutoka] = useState('EUR');
   const [kwenda, setKwenda] = useState('TZS');
 
   function hesabu() {
     const nambari = parseFloat(kiasi) || 0;
     const katikaDola = nambari / viwango[kutoka];
-    return (katikaDola * viwango[kwenda]).toFixed(2);
+    return (katikaDola * viwango[kwenda]).toLocaleString('en-US', {maximumFractionDigits: 0});
   }
 
   const kiwango = (viwango[kwenda] / viwango[kutoka]).toFixed(2);
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#880e4f" />
 
-      {/* Juu — Logo */}
-      <View style={styles.juu}>
-        <Image source={require('../assets/logo.png')} style={styles.logo} />
-        <View style={styles.offerBadge}>
-          <Text style={styles.offerIcon}>❤️</Text>
-          <Text style={styles.offerManeno}>No transfer fees on this transfer</Text>
+      <ScrollView contentContainerStyle={styles.scroll}>
+
+        {/* Logo */}
+        <View style={styles.logoSehemu}>
+          <Image source={require('../assets/logo.png')} style={styles.logo} />
+          <Text style={styles.tagline}>Send Easly, Spend Less.</Text>
+          <Text style={styles.maelezo}>
+            Join 1,000,000+ customers sending money globally.
+          </Text>
         </View>
-      </View>
 
-      {/* Calculator Card */}
-      <View style={styles.calculatorKadi}>
+        {/* Calculator */}
+        <View style={styles.calculator}>
 
-        {/* You send */}
-        <Text style={styles.lebo}>You send:</Text>
-        <View style={styles.safu}>
-          <TextInput
-            style={styles.ingizo}
-            value={kiasi}
-            onChangeText={setKiasi}
-            keyboardType="numeric"
-            placeholder="0"
-          />
-          <View style={styles.sarafuChaguo}>
-            <Text style={styles.sarafuManeno}>{kutoka}</Text>
-            <Text style={styles.chevron}>∨</Text>
+          <Text style={styles.lebo}>You send</Text>
+          <View style={styles.inputSafu}>
+            <View style={styles.sarafuBox}>
+              <Text style={styles.bendera}>{bendera[kutoka]}</Text>
+              <Text style={styles.sarafuJina}>{kutoka}</Text>
+            </View>
+            <TextInput
+              style={styles.ingizo}
+              value={kiasi}
+              onChangeText={setKiasi}
+              keyboardType="numeric"
+              placeholderTextColor="rgba(255,255,255,0.5)"
+            />
           </View>
-        </View>
 
-        <View style={styles.mgawanyo} />
-
-        {/* They receive */}
-        <Text style={styles.lebo}>They receive:</Text>
-        <View style={styles.safu}>
-          <Text style={styles.mpokeajiKiasi}>{hesabu()}</Text>
-          <View style={styles.sarafuChaguo}>
-            <Text style={styles.sarafuManeno}>{kwenda}</Text>
-            <Text style={styles.chevron}>∨</Text>
+          <View style={styles.kiwangoSafu}>
+            <Text style={styles.kiwangoManeno}>
+              1 {kutoka} = {kiwango} {kwenda}
+            </Text>
           </View>
+
+          <Text style={styles.lebo}>They receive</Text>
+          <View style={styles.inputSafu}>
+            <View style={styles.sarafuBox}>
+              <Text style={styles.bendera}>{bendera[kwenda]}</Text>
+              <Text style={styles.sarafuJina}>{kwenda}</Text>
+            </View>
+            <TextInput
+              style={[styles.ingizo, styles.ingizoMatokeo]}
+              value={hesabu()}
+              editable={false}
+            />
+          </View>
+
         </View>
 
-        <View style={styles.mgawanyo} />
-
-        {/* Exchange rate */}
-        <Text style={styles.kiwango}>
-          Exchange rate: 1 {kutoka} = {kiwango} {kwenda}
-        </Text>
-
-      </View>
-
-      {/* Vitufe vya Login na Signup */}
-      <View style={styles.vitufeKadi}>
-
-        <View style={styles.vitufeSafu}>
+        {/* Vitufe */}
+        <View style={styles.vitufe}>
           <TouchableOpacity
             style={styles.loginKitufe}
             onPress={() => navigation.navigate('Login')}
@@ -105,185 +118,167 @@ export default function LandingScreen({ navigation }) {
           </TouchableOpacity>
         </View>
 
-        <Text style={styles.au}>Or</Text>
+        <Text style={styles.au}>Or continue with</Text>
 
         <TouchableOpacity style={styles.socialKitufe}>
-          <Text style={styles.googleG}>G</Text>
-          <Text style={styles.socialManeno}>CONTINUE WITH GOOGLE</Text>
+          <Text style={styles.socialManeno}>G  Continue with Google</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.socialKitufe}>
-          <Text style={styles.appleIcon}></Text>
-          <Text style={styles.socialManeno}>CONTINUE WITH APPLE</Text>
+          <Text style={styles.socialManeno}>  Continue with Apple</Text>
         </TouchableOpacity>
 
-      </View>
-
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ff7da8',
+    backgroundColor: '#880e4f',
   },
-  juu: {
-    alignItems: 'center',
+  scroll: {
+    flexGrow: 1,
+    padding: 24,
     paddingTop: 60,
-    paddingBottom: 24,
   },
-  
-  logo: {
-  width: 200,
-  height: 200,
-  resizeMode: 'contain',
-  marginBottom: 8,
-},
-  jinaApp: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#c2185b',
-    marginBottom: 16,
-  },
-  offerBadge: {
-    flexDirection: 'row',
+  logoSehemu: {
     alignItems: 'center',
-    gap: 8,
+    marginBottom: 24,
   },
-  offerIcon: {
-    fontSize: 20,
+  logo: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
+    marginBottom: 12,
   },
-  offerManeno: {
-    fontSize: 19,
-    color: '#000000',
-    fontWeight: '600',
-  },
-  calculatorKadi: {
-    backgroundColor: 'white',
-    marginHorizontal: 16,
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 16,
-  },
-  lebo: {
-    fontSize: 15,
-    color: '#555',
+  tagline: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
     marginBottom: 8,
   },
-  safu: {
+  maelezo: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.8)',
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+  calculator: {
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    borderRadius: 20,
+    padding: 20,
+    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
+  },
+  lebo: {
+    color: 'rgba(255,255,255,0.85)',
+    fontSize: 13,
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+  inputSafu: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 16,
+  },
+  sarafuBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 16,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    borderRadius: 10,
+    padding: 12,
+    gap: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.3)',
+  },
+  bendera: {
+    fontSize: 20,
+  },
+  sarafuJina: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 15,
   },
   ingizo: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#1a1a1a',
     flex: 1,
-  },
-  mpokeajiKiasi: {
-    fontSize: 28,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    borderRadius: 10,
+    padding: 12,
+    color: 'white',
+    fontSize: 22,
     fontWeight: 'bold',
-    color: '#1a1a1a',
-    flex: 1,
+    textAlign: 'right',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.3)',
   },
-  sarafuChaguo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f5f5f5',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
-    gap: 6,
+  ingizoMatokeo: {
+    color: '#f8bbd0',
+    fontWeight: 'bold',
   },
-  sarafuManeno: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1a1a1a',
-  },
-  chevron: {
-    fontSize: 12,
-    color: '#888',
-  },
-  mgawanyo: {
-    height: 1,
-    backgroundColor: '#ff3b3b',
+  kiwangoSafu: {
+    alignItems: 'flex-end',
     marginBottom: 16,
   },
-  kiwango: {
-    fontSize: 14,
-    color: '#c2185b',
+  kiwangoManeno: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    color: 'white',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    fontSize: 12,
     fontWeight: '600',
-    textAlign: 'center',
   },
-  vitufeKadi: {
-    backgroundColor: 'white',
-    marginHorizontal: 16,
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 30,
-  },
-  vitufeSafu: {
+  vitufe: {
     flexDirection: 'row',
     gap: 12,
     marginBottom: 16,
   },
   loginKitufe: {
     flex: 1,
-    borderWidth: 1.5,
-    borderColor: '#f8bbd0',
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.5)',
     borderRadius: 30,
     padding: 14,
     alignItems: 'center',
   },
   loginManeno: {
-    color: '#c2185b',
+    color: 'white',
     fontWeight: 'bold',
     fontSize: 15,
   },
   signupKitufe: {
     flex: 1,
-    backgroundColor: '#e91861',
+    backgroundColor: 'white',
     borderRadius: 30,
     padding: 14,
     alignItems: 'center',
   },
   signupManeno: {
-    color: '#ffffff',
+    color: '#880e4f',
     fontWeight: 'bold',
     fontSize: 15,
   },
   au: {
+    color: 'rgba(255,255,255,0.6)',
     textAlign: 'center',
-    color: '#888',
-    fontSize: 15,
     marginBottom: 16,
+    fontSize: 14,
   },
   socialKitufe: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1.5,
-    borderColor: '#f8bbd0',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.3)',
     borderRadius: 30,
     padding: 14,
+    alignItems: 'center',
     marginBottom: 12,
-    gap: 10,
-  },
-  googleG: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#c2185b',
-  },
-  appleIcon: {
-    fontSize: 18,
-    color: '#1a1a1a',
   },
   socialManeno: {
+    color: 'white',
+    fontWeight: '600',
     fontSize: 15,
-    fontWeight: 'bold',
-    color: '#1a1a1a',
   },
 });
