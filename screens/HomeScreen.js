@@ -139,8 +139,11 @@ export default function HomeScreen({ navigation }) {
             <Text style={styles.avatarText}>SE</Text>
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Send Money</Text>
-          <TouchableOpacity style={styles.bonusKitufe}>
-            <Text style={styles.bonusManeno}>€5 🎁</Text>
+          <TouchableOpacity 
+            style={styles.bonusKitufe}
+            onPress={() => navigation.navigate('Referrals')}
+          >
+            <Text style={styles.bonusManeno}>€10 🎁</Text>
           </TouchableOpacity>
         </View>
 
@@ -349,7 +352,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255,255,255,0.3)',
   },
   ingizoMatokeo: {
-    color: '#f8bbd0',
+    color: 'white',
   },
   kiwangoSafu: {
     alignItems: 'flex-end',
