@@ -1,9 +1,9 @@
 import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 export default function ReferralsScreen() {
@@ -16,7 +16,7 @@ export default function ReferralsScreen() {
         <Text style={styles.bonusEmoji}>🎁</Text>
         <Text style={styles.bonusKichwa}>Invite friends</Text>
         <Text style={styles.bonusMaelezo}>
-          Invite your friends to SendEasly and earn €5 
+          Invite your friends to SendEasly and earn €10 
           for every friend who sends money!
         </Text>
         <TouchableOpacity style={styles.shareKitufe}>
