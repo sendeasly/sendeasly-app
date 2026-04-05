@@ -21,313 +21,344 @@ const viwango = {
   AED: 3.67,
 };
 
+const bendera = {
+  USD: '🇺🇸',
+  EUR: '🇪🇺',
+  GBP: '🇬🇧',
+  TZS: '🇹🇿',
+  KES: '🇰🇪',
+  UGX: '🇺🇬',
+  ZAR: '🇿🇦',
+  CAD: '🇨🇦',
+  AED: '🇦🇪',
+};
+
 export default function HomeScreen({ navigation }) {
-  const [kiasi, setKiasi] = useState('1');
+  const [kiasi, setKiasi] = useState('1000');
   const [kutoka, setKutoka] = useState('EUR');
   const [kwenda, setKwenda] = useState('TZS');
 
   function hesabu() {
     const nambari = parseFloat(kiasi) || 0;
     const katikaDola = nambari / viwango[kutoka];
-    return (katikaDola * viwango[kwenda]).toFixed(2);
+    return (katikaDola * viwango[kwenda]).toLocaleString('en-US', {maximumFractionDigits: 0});
   }
 
   const kiwango = (viwango[kwenda] / viwango[kutoka]).toFixed(2);
 
   return (
-    <ScrollView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#f5f5f5" />
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#880e4f" />
 
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity 
-  style={styles.avatar}
-  onPress={() => navigation.navigate('Profile')}
->
-  <Text style={styles.avatarText}>SE</Text>
-</TouchableOpacity>
-        <TouchableOpacity style={styles.bonusKitufe}>
-          <Text style={styles.bonusManeno}>€5 🎁</Text>
-        </TouchableOpacity>
-      </View>
+      <ScrollView contentContainerStyle={styles.scroll}>
 
-      {/* Calculator */}
-      <View style={styles.calculator}>
-
-        {/* Sarafu */}
-        <View style={styles.sarafu}>
-          <View style={styles.sarafuMoja}>
-            <Text style={styles.bendera}>🇩🇪</Text>
-            <Text style={styles.sarafuJina}>{kutoka}</Text>
-          </View>
-          <Text style={styles.mshale}>⇄</Text>
-          <View style={styles.sarafuMoja}>
-            <Text style={styles.bendera}>🇹🇿</Text>
-            <Text style={styles.sarafuJina}>{kwenda}</Text>
-          </View>
-        </View>
-
-        {/* Ingizo */}
-        <View style={styles.maingizo}>
-          <TextInput
-            style={styles.ingizo}
-            value={kiasi}
-            onChangeText={setKiasi}
-            keyboardType="numeric"
-            placeholder="0"
-          />
-          <Text style={styles.mshaleKati}>⇄</Text>
-          <TextInput
-            style={styles.ingizo}
-            value={hesabu()}
-            editable={false}
-            placeholder="0"
-          />
-        </View>
-
-        {/* Kiwango */}
-        <Text style={styles.kiwango}>
-          €1.00 = TZS {kiwango}
-        </Text>
-
-        {/* Send Button */}
-        <TouchableOpacity 
-  style={styles.sendKitufe}
-  onPress={() => navigation.navigate('Recipient', {
-    kiasi: kiasi,
-    kutoka: kutoka,
-    kwenda: kwenda,
-    mpokeaji: hesabu(),
-  })}
->
-  <Text style={styles.sendManeno}>SEND</Text>
-</TouchableOpacity>
-
-      </View>
-
-      {/* Wallet */}
-      <View style={styles.sehemu}>
-        <View style={styles.walletKichwa}>
-          <Text style={styles.sehemuKichwa}>Wallet</Text>
-          <Text style={styles.swali}>?</Text>
-        </View>
-
-        <TouchableOpacity style={styles.ongezaKitufe}>
-          <Text style={styles.ongezaManeno}>+ Add money</Text>
-        </TouchableOpacity>
-
-        <View style={styles.walletKadi}>
-          <View style={styles.walletMoja}>
-            <Text style={styles.bendera}>🇪🇺</Text>
-            <Text style={styles.walletSarafu}>EUR</Text>
-            <Text style={styles.walletKiasi}>0.00</Text>
-          </View>
-          <TouchableOpacity style={styles.walletOngeza}>
-            <Text style={styles.walletOngezaManeno}>+</Text>
-            <Text style={styles.walletOngezaManeno}>Add</Text>
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.avatar}
+            onPress={() => navigation.navigate('Profile')}
+          >
+            <Text style={styles.avatarText}>SE</Text>
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Send Money</Text>
+          <TouchableOpacity style={styles.bonusKitufe}>
+            <Text style={styles.bonusManeno}>€5 🎁</Text>
           </TouchableOpacity>
         </View>
-      </View>
 
-      {/* Activity */}
-      <View style={styles.sehemu}>
-        <View style={styles.activityKichwa}>
-          <Text style={styles.sehemuKichwa}>Activity</Text>
-          <Text style={styles.hide}>Hide</Text>
+        {/* Calculator */}
+        <View style={styles.calculator}>
+
+          <Text style={styles.lebo}>You send</Text>
+          <View style={styles.inputSafu}>
+            <View style={styles.sarafuBox}>
+              <Text style={styles.bendera}>{bendera[kutoka]}</Text>
+              <Text style={styles.sarafuJina}>{kutoka}</Text>
+            </View>
+            <TextInput
+              style={styles.ingizo}
+              value={kiasi}
+              onChangeText={setKiasi}
+              keyboardType="numeric"
+              placeholderTextColor="rgba(255,255,255,0.5)"
+            />
+          </View>
+
+          <View style={styles.kiwangoSafu}>
+            <Text style={styles.kiwangoManeno}>
+              1 {kutoka} = {kiwango} {kwenda}
+            </Text>
+          </View>
+
+          <Text style={styles.lebo}>They receive</Text>
+          <View style={styles.inputSafu}>
+            <View style={styles.sarafuBox}>
+              <Text style={styles.bendera}>{bendera[kwenda]}</Text>
+              <Text style={styles.sarafuJina}>{kwenda}</Text>
+            </View>
+            <TextInput
+              style={[styles.ingizo, styles.ingizoMatokeo]}
+              value={hesabu()}
+              editable={false}
+            />
+          </View>
+
+          {/* Send Button */}
+          <TouchableOpacity
+            style={styles.sendKitufe}
+            onPress={() => navigation.navigate('Recipient', {
+              kiasi: kiasi,
+              kutoka: kutoka,
+              kwenda: kwenda,
+              mpokeaji: hesabu(),
+            })}
+          >
+            <Text style={styles.sendManeno}>SEND</Text>
+          </TouchableOpacity>
+
         </View>
-        <Text style={styles.tupu}>No recent activity</Text>
-      </View>
 
-    </ScrollView>
+        {/* Wallet */}
+        <View style={styles.sehemu}>
+          <View style={styles.sehemuHeader}>
+            <Text style={styles.sehemuKichwa}>Wallet</Text>
+            <TouchableOpacity style={styles.ongezaKitufe}>
+              <Text style={styles.ongezaManeno}>+ Add money</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.walletVitufe}>
+            <View style={styles.walletKadi}>
+              <Text style={styles.bendera}>🇪🇺</Text>
+              <Text style={styles.walletSarafu}>EUR</Text>
+              <Text style={styles.walletKiasi}>0.00</Text>
+            </View>
+            <TouchableOpacity style={styles.walletOngeza}>
+              <Text style={styles.walletOngezaPlus}>+</Text>
+              <Text style={styles.walletOngezaManeno}>Add</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Activity */}
+        <View style={styles.sehemu}>
+          <View style={styles.sehemuHeader}>
+            <Text style={styles.sehemuKichwa}>Activity</Text>
+            <Text style={styles.hide}>Hide</Text>
+          </View>
+          <Text style={styles.tupu}>No recent activity</Text>
+        </View>
+
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#880e4f',
+  },
+  scroll: {
+    flexGrow: 1,
+    padding: 16,
+    paddingTop: 50,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 20,
-    paddingTop: 50,
+    marginBottom: 24,
   },
   avatar: {
-    width: 45,
-    height: 45,
-    borderRadius: 25,
-    backgroundColor: '#c2185b',
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(255,255,255,0.2)',
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.3)',
   },
   avatarText: {
     color: 'white',
     fontWeight: 'bold',
     fontSize: 16,
   },
+  headerTitle: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
   bonusKitufe: {
-    backgroundColor: '#e8f5e9',
-    paddingHorizontal: 16,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.3)',
   },
   bonusManeno: {
-    color: '#c2185b',
+    color: 'white',
     fontWeight: '600',
+    fontSize: 13,
   },
   calculator: {
-    backgroundColor: '#f8cce2',
-    margin: 16,
-    borderRadius: 16,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    borderRadius: 20,
     padding: 20,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
   },
-  sarafu: {
+  lebo: {
+    color: 'rgba(255,255,255,0.85)',
+    fontSize: 13,
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+  inputSafu: {
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    gap: 8,
     marginBottom: 16,
   },
-  sarafuMoja: {
+  sarafuBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    borderRadius: 10,
+    padding: 12,
+    gap: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.3)',
   },
   bendera: {
-    fontSize: 24,
+    fontSize: 20,
   },
   sarafuJina: {
-    fontSize: 18,
+    color: 'white',
     fontWeight: '600',
-    color: '#1a1a1a',
-  },
-  mshale: {
-    fontSize: 20,
-    color: '#c2185b',
-  },
-  maingizo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 12,
+    fontSize: 15,
   },
   ingizo: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: 'rgba(255,255,255,0.15)',
     borderRadius: 10,
-    padding: 16,
-    fontSize: 24,
-    textAlign: 'center',
+    padding: 12,
+    color: 'white',
+    fontSize: 22,
+    fontWeight: 'bold',
+    textAlign: 'right',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.3)',
   },
-  mshaleKati: {
-    fontSize: 20,
-    color: '#c2185b',
+  ingizoMatokeo: {
+    color: '#f8bbd0',
   },
-  kiwango: {
-    color: '#c2185b',
-    fontWeight: '600',
+  kiwangoSafu: {
+    alignItems: 'flex-end',
     marginBottom: 16,
-    fontSize: 15,
+  },
+  kiwangoManeno: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    color: 'white',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    fontSize: 12,
+    fontWeight: '600',
   },
   sendKitufe: {
-    backgroundColor: '#c70347',
+    backgroundColor: 'white',
     borderRadius: 30,
     padding: 16,
     alignItems: 'center',
   },
   sendManeno: {
-    color: '#ffffff',
+    color: '#880e4f',
     fontWeight: 'bold',
     fontSize: 16,
     letterSpacing: 2,
   },
   sehemu: {
-    backgroundColor: 'white',
-    margin: 16,
+    backgroundColor: 'rgba(255,255,255,0.1)',
     borderRadius: 16,
-    padding: 20,
+    padding: 16,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.15)',
   },
-  walletKichwa: {
+  sehemuHeader: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    gap: 8,
-    marginBottom: 12,
-  },
-  sehemuKichwa: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#c2185b',
-  },
-  swali: {
-    backgroundColor: '#c2185b',
-    color: 'white',
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    textAlign: 'center',
-    fontSize: 12,
-  },
-  ongezaKitufe: {
-    backgroundColor: '#f8c6d8',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    alignSelf: 'flex-start',
     marginBottom: 16,
   },
-  ongezaManeno: {
-    color: '#c2185b',
-    fontWeight: '600',
+  sehemuKichwa: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'white',
   },
-  walletKadi: {
+  ongezaKitufe: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 20,
+  },
+  ongezaManeno: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 13,
+  },
+  walletVitufe: {
     flexDirection: 'row',
     gap: 12,
   },
-  walletMoja: {
+  walletKadi: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: 'rgba(255,255,255,0.15)',
     borderRadius: 12,
     padding: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
   },
   walletSarafu: {
-    fontSize: 16,
-    color: '#555',
+    color: 'rgba(255,255,255,0.7)',
+    fontSize: 14,
     marginTop: 4,
   },
   walletKiasi: {
-    fontSize: 28,
+    color: 'white',
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#1a1a1a',
     marginTop: 8,
   },
   walletOngeza: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: 'rgba(255,255,255,0.1)',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: 'rgba(255,255,255,0.2)',
     borderStyle: 'dashed',
   },
-  walletOngezaManeno: {
-    fontSize: 18,
-    color: '#555',
+  walletOngezaPlus: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: 'bold',
   },
-  activityKichwa: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
+  walletOngezaManeno: {
+    color: 'rgba(255,255,255,0.7)',
+    fontSize: 14,
   },
   hide: {
-    color: '#c2185b',
-    fontWeight: '600',
+    color: 'rgba(255,255,255,0.6)',
+    fontSize: 14,
   },
   tupu: {
-    color: '#888',
+    color: 'rgba(255,255,255,0.5)',
     textAlign: 'center',
     padding: 20,
   },
