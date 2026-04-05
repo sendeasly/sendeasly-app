@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import {
+  FlatList,
+  Modal,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -35,20 +37,99 @@ const bendera = {
 
 export default function HomeScreen({ navigation }) {
   const [kiasi, setKiasi] = useState('1000');
+  const [mpokeajiKiasi, setMpokeajiKiasi] = useState('');
   const [kutoka, setKutoka] = useState('EUR');
   const [kwenda, setKwenda] = useState('TZS');
+  const [modalWazi, setModalWazi] = useState(false);
+  const [modalAina, setModalAina] = useState('kutoka');
 
-  function hesabu() {
-    const nambari = parseFloat(kiasi) || 0;
+  function hesabu(k) {
+    const nambari = parseFloat(k) || 0;
     const katikaDola = nambari / viwango[kutoka];
     return (katikaDola * viwango[kwenda]).toLocaleString('en-US', {maximumFractionDigits: 0});
   }
 
+  function hesabuKutoka(k) {
+    const nambari = parseFloat(k.replace(/,/g, '')) || 0;
+    const katikaDola = nambari / viwango[kwenda];
+    return (katikaDola * viwango[kutoka]).toFixed(2);
+  }
+
+  function badilishaKiasi(thamani) {
+    setKiasi(thamani);
+    setMpokeajiKiasi('');
+  }
+
+  function badilishaMpokeaji(thamani) {
+    setMpokeajiKiasi(thamani);
+    setKiasi('');
+  }
+
   const kiwango = (viwango[kwenda] / viwango[kutoka]).toFixed(2);
+
+  const hesabuMatokeo = mpokeajiKiasi
+    ? hesabuKutoka(mpokeajiKiasi)
+    : hesabu(kiasi);
+
+  const inayoonyeshwa = mpokeajiKiasi
+    ? mpokeajiKiasi
+    : hesabu(kiasi);
+
+  function fungaModal(aina) {
+    setModalAina(aina);
+    setModalWazi(true);
+  }
+
+  function chaguaSarafu(sarafu) {
+    if (modalAina === 'kutoka') {
+      setKutoka(sarafu);
+    } else {
+      setKwenda(sarafu);
+    }
+    setModalWazi(false);
+  }
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#880e4f" />
+
+      {/* Currency Modal */}
+      <Modal
+        visible={modalWazi}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setModalWazi(false)}
+      >
+        <View style={styles.modalBg}>
+          <View style={styles.modalKadi}>
+            <Text style={styles.modalKichwa}>
+              {modalAina === 'kutoka' ? 'Select send currency' : 'Select receive currency'}
+            </Text>
+            <FlatList
+              data={Object.keys(viwango)}
+              keyExtractor={(item) => item}
+              renderItem={({item}) => (
+                <TouchableOpacity
+                  style={styles.modalItem}
+                  onPress={() => chaguaSarafu(item)}
+                >
+                  <Text style={styles.modalBendera}>{bendera[item]}</Text>
+                  <Text style={styles.modalSarafu}>{item}</Text>
+                  <Text style={styles.modalKiwango}>
+                    1 USD = {viwango[item]} {item}
+                  </Text>
+                </TouchableOpacity>
+              )}
+            />
+            <TouchableOpacity
+              style={styles.modalFunga}
+              onPress={() => setModalWazi(false)}
+            >
+              <Text style={styles.modalFungaManeno}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       <ScrollView contentContainerStyle={styles.scroll}>
 
@@ -69,37 +150,52 @@ export default function HomeScreen({ navigation }) {
         {/* Calculator */}
         <View style={styles.calculator}>
 
+          {/* You send */}
           <Text style={styles.lebo}>You send</Text>
           <View style={styles.inputSafu}>
-            <View style={styles.sarafuBox}>
+            <TouchableOpacity
+              style={styles.sarafuBox}
+              onPress={() => fungaModal('kutoka')}
+            >
               <Text style={styles.bendera}>{bendera[kutoka]}</Text>
               <Text style={styles.sarafuJina}>{kutoka}</Text>
-            </View>
+              <Text style={styles.chevron}>▾</Text>
+            </TouchableOpacity>
             <TextInput
               style={styles.ingizo}
               value={kiasi}
-              onChangeText={setKiasi}
+              onChangeText={badilishaKiasi}
               keyboardType="numeric"
               placeholderTextColor="rgba(255,255,255,0.5)"
+              placeholder="0"
             />
           </View>
 
+          {/* Exchange rate */}
           <View style={styles.kiwangoSafu}>
             <Text style={styles.kiwangoManeno}>
               1 {kutoka} = {kiwango} {kwenda}
             </Text>
           </View>
 
+          {/* They receive */}
           <Text style={styles.lebo}>They receive</Text>
           <View style={styles.inputSafu}>
-            <View style={styles.sarafuBox}>
+            <TouchableOpacity
+              style={styles.sarafuBox}
+              onPress={() => fungaModal('kwenda')}
+            >
               <Text style={styles.bendera}>{bendera[kwenda]}</Text>
               <Text style={styles.sarafuJina}>{kwenda}</Text>
-            </View>
+              <Text style={styles.chevron}>▾</Text>
+            </TouchableOpacity>
             <TextInput
               style={[styles.ingizo, styles.ingizoMatokeo]}
-              value={hesabu()}
-              editable={false}
+              value={inayoonyeshwa}
+              onChangeText={badilishaMpokeaji}
+              keyboardType="numeric"
+              placeholderTextColor="rgba(255,255,255,0.5)"
+              placeholder="0"
             />
           </View>
 
@@ -107,10 +203,10 @@ export default function HomeScreen({ navigation }) {
           <TouchableOpacity
             style={styles.sendKitufe}
             onPress={() => navigation.navigate('Recipient', {
-              kiasi: kiasi,
+              kiasi: kiasi || hesabuKutoka(mpokeajiKiasi),
               kutoka: kutoka,
               kwenda: kwenda,
-              mpokeaji: hesabu(),
+              mpokeaji: inayoonyeshwa,
             })}
           >
             <Text style={styles.sendManeno}>SEND</Text>
@@ -126,7 +222,6 @@ export default function HomeScreen({ navigation }) {
               <Text style={styles.ongezaManeno}>+ Add money</Text>
             </TouchableOpacity>
           </View>
-
           <View style={styles.walletVitufe}>
             <View style={styles.walletKadi}>
               <Text style={styles.bendera}>🇪🇺</Text>
@@ -240,6 +335,10 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 15,
   },
+  chevron: {
+    color: 'white',
+    fontSize: 12,
+  },
   ingizo: {
     flex: 1,
     backgroundColor: 'rgba(255,255,255,0.15)',
@@ -279,6 +378,58 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
     letterSpacing: 2,
+  },
+  modalBg: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalKadi: {
+    backgroundColor: 'white',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    maxHeight: '70%',
+  },
+  modalKichwa: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#880e4f',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  modalItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f5f5f5',
+    gap: 12,
+  },
+  modalBendera: {
+    fontSize: 24,
+  },
+  modalSarafu: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1a1a1a',
+    flex: 1,
+  },
+  modalKiwango: {
+    fontSize: 13,
+    color: '#888',
+  },
+  modalFunga: {
+    backgroundColor: '#f5f5f5',
+    borderRadius: 12,
+    padding: 14,
+    alignItems: 'center',
+    marginTop: 12,
+  },
+  modalFungaManeno: {
+    color: '#880e4f',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
   sehemu: {
     backgroundColor: 'rgba(255,255,255,0.1)',
