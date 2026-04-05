@@ -46,13 +46,15 @@ export default function HomeScreen({ navigation }) {
   function hesabu(k) {
     const nambari = parseFloat(k) || 0;
     const katikaDola = nambari / viwango[kutoka];
-    return (katikaDola * viwango[kwenda]).toLocaleString('en-US', {maximumFractionDigits: 0});
+    const matokeo = katikaDola * viwango[kwenda];
+    return matokeo % 1 === 0 ? matokeo.toString() : matokeo.toFixed(2);
   }
 
   function hesabuKutoka(k) {
-    const nambari = parseFloat(k.replace(/,/g, '')) || 0;
+    const nambari = parseFloat(k) || 0;
     const katikaDola = nambari / viwango[kwenda];
-    return (katikaDola * viwango[kutoka]).toFixed(2);
+    const matokeo = katikaDola * viwango[kutoka];
+    return matokeo % 1 === 0 ? matokeo.toString() : matokeo.toFixed(2);
   }
 
   function badilishaKiasi(thamani) {
@@ -65,15 +67,10 @@ export default function HomeScreen({ navigation }) {
     setKiasi('');
   }
 
-  const kiwango = (viwango[kwenda] / viwango[kutoka]).toFixed(2);
+  const kiwango = (viwango[kwenda] / viwango[kutoka]).toFixed(4);
 
-  const hesabuMatokeo = mpokeajiKiasi
-    ? hesabuKutoka(mpokeajiKiasi)
-    : hesabu(kiasi);
-
-  const inayoonyeshwa = mpokeajiKiasi
-    ? mpokeajiKiasi
-    : hesabu(kiasi);
+  const inayoonyeshwa = mpokeajiKiasi ? mpokeajiKiasi : hesabu(kiasi);
+  const inatumwa = kiasi ? kiasi : hesabuKutoka(mpokeajiKiasi);
 
   function fungaModal(aina) {
     setModalAina(aina);
@@ -163,7 +160,7 @@ export default function HomeScreen({ navigation }) {
             </TouchableOpacity>
             <TextInput
               style={styles.ingizo}
-              value={kiasi}
+              value={inatumwa}
               onChangeText={badilishaKiasi}
               keyboardType="numeric"
               placeholderTextColor="rgba(255,255,255,0.5)"
