@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import {
-  Alert,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 
 export default function ConfirmScreen({ navigation, route }) {
@@ -25,27 +24,17 @@ export default function ConfirmScreen({ navigation, route }) {
   const ada = (parseFloat(kiasi) * 0.02).toFixed(2);
   const jumla = (parseFloat(kiasi) + parseFloat(ada)).toFixed(2);
 
-  async function thibitisha() {
-    setInatuma(true);
-
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      Alert.alert(
-        '✅ Success!',
-        `You have successfully sent ${kiasi} ${kutoka} to ${mpokeajiJina}!`,
-        [
-          {
-            text: 'OK',
-            onPress: () => navigation.navigate('Main'),
-          },
-        ]
-      );
-    } catch (e) {
-      Alert.alert('Error', 'Something went wrong!');
-    }
-
-    setInatuma(false);
+  function thibitisha() {
+    navigation.navigate('PaymentMethod', {
+      kiasi,
+      kutoka,
+      kwenda,
+      mpokeaji,
+      mpokeajiJina,
+      mpokeajiNchi,
+      mpokeajiBendera,
+      mpokeajiSimu,
+    });
   }
 
   return (

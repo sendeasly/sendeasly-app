@@ -81,6 +81,8 @@ function App() {
           <Stack.Screen name="Recipient" component={RecipientScreen} />
           <Stack.Screen name="Confirm" component={ConfirmScreen} />
           <Stack.Screen name="Profile" component={ProfileScreen} />
+          <Stack.Screen name="PaymentMethod" component={PaymentMethodScreen} />
+          <Stack.Screen name="TransferStatus" component={TransferStatusScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </GestureHandlerRootView>
