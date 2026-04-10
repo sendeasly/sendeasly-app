@@ -41,7 +41,6 @@ export default function RegisterScreen({ navigation }) {
       Alert.alert('Error', 'Please agree to Terms of Service!');
       return;
     }
-
     setInapakia(true);
     try {
       const jibu = await fetch('https://money-transfer-backend-production.up.railway.app/sajili', {
@@ -64,16 +63,12 @@ export default function RegisterScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#f5f5f5" />
-
+      <StatusBar barStyle="light-content" backgroundColor="#880e4f" />
       <ScrollView contentContainerStyle={styles.scroll}>
 
         {/* Header */}
         <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.rudiKitufe}
-            onPress={() => navigation.goBack()}
-          >
+          <TouchableOpacity style={styles.rudiKitufe} onPress={() => navigation.goBack()}>
             <Text style={styles.rudiManeno}>←</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.helpKitufe}>
@@ -81,19 +76,13 @@ export default function RegisterScreen({ navigation }) {
           </TouchableOpacity>
         </View>
 
-        {/* Progress Bar */}
+        {/* Progress */}
         <View style={styles.progressBar}>
-          <View style={styles.progressStep}>
-            <View style={[styles.progressDot, styles.progressDotAmilifu]} />
-          </View>
+          <View style={[styles.progressDot, styles.progressDotAmilifu]} />
           <View style={styles.progressLine} />
-          <View style={styles.progressStep}>
-            <View style={[styles.progressDot, styles.progressDotAmilifu]} />
-          </View>
+          <View style={[styles.progressDot, styles.progressDotAmilifu]} />
           <View style={styles.progressLine} />
-          <View style={styles.progressStep}>
-            <View style={styles.progressDot} />
-          </View>
+          <View style={styles.progressDot} />
         </View>
 
         {/* Title */}
@@ -105,13 +94,12 @@ export default function RegisterScreen({ navigation }) {
         {/* Form */}
         <View style={styles.form}>
 
-          {/* Email */}
           <View style={styles.ingizoWrapper}>
             <Text style={styles.ingizoIcon}>✉</Text>
             <TextInput
               style={styles.ingizo}
               placeholder="Email"
-              placeholderTextColor="#aaa"
+              placeholderTextColor="rgba(255,255,255,0.4)"
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
@@ -120,13 +108,12 @@ export default function RegisterScreen({ navigation }) {
           </View>
           <View style={styles.separator} />
 
-          {/* Password */}
           <View style={styles.ingizoWrapper}>
             <Text style={styles.ingizoIcon}>🔒</Text>
             <TextInput
               style={styles.ingizo}
               placeholder="Password"
-              placeholderTextColor="#aaa"
+              placeholderTextColor="rgba(255,255,255,0.4)"
               value={nywila}
               onChangeText={setNywila}
               secureTextEntry={!onyeshaNywila}
@@ -137,13 +124,12 @@ export default function RegisterScreen({ navigation }) {
           </View>
           <View style={styles.separator} />
 
-          {/* Confirm Password */}
           <View style={styles.ingizoWrapper}>
             <Text style={styles.ingizoIcon}>🔒</Text>
             <TextInput
               style={styles.ingizo}
               placeholder="Confirm your new password"
-              placeholderTextColor="#aaa"
+              placeholderTextColor="rgba(255,255,255,0.4)"
               value={nywila2}
               onChangeText={setNywila2}
               secureTextEntry={!onyeshaNywila2}
@@ -184,11 +170,10 @@ export default function RegisterScreen({ navigation }) {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Login')}
-          >
+          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
             <Text style={styles.loginLink}>
-              Already have an account? <Text style={styles.loginLinkBold}>Log in</Text>
+              Already have an account?{' '}
+              <Text style={styles.loginLinkBold}>Log in</Text>
             </Text>
           </TouchableOpacity>
         </View>
@@ -199,14 +184,8 @@ export default function RegisterScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  scroll: {
-    flexGrow: 1,
-    paddingBottom: 40,
-  },
+  container: { flex: 1, backgroundColor: '#880e4f' },
+  scroll: { flexGrow: 1, paddingBottom: 40 },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -215,161 +194,96 @@ const styles = StyleSheet.create({
     paddingTop: 50,
   },
   rudiKitufe: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#e0e0e0',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: 40, height: 40, borderRadius: 20,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    alignItems: 'center', justifyContent: 'center',
   },
-  rudiManeno: {
-    color: '#333',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
+  rudiManeno: { color: 'white', fontSize: 20, fontWeight: 'bold' },
   helpKitufe: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#2196f3',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: 40, height: 40, borderRadius: 20,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    alignItems: 'center', justifyContent: 'center',
   },
-  helpManeno: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
+  helpManeno: { color: 'white', fontSize: 16, fontWeight: 'bold' },
   progressBar: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 20,
     marginBottom: 32,
-    gap: 0,
-  },
-  progressStep: {
-    alignItems: 'center',
   },
   progressDot: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
+    width: 16, height: 16, borderRadius: 8,
     borderWidth: 2,
-    borderColor: '#2196f3',
+    borderColor: 'rgba(255,255,255,0.5)',
     backgroundColor: 'transparent',
   },
   progressDotAmilifu: {
-    backgroundColor: '#2196f3',
+    backgroundColor: 'white',
+    borderColor: 'white',
   },
   progressLine: {
-    flex: 1,
-    height: 2,
-    backgroundColor: '#2196f3',
+    flex: 1, height: 2,
+    backgroundColor: 'rgba(255,255,255,0.5)',
   },
-  titleSehemu: {
-    paddingHorizontal: 20,
-    marginBottom: 24,
-  },
+  titleSehemu: { paddingHorizontal: 20, marginBottom: 24 },
   kichwa: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#1a1a1a',
-    marginBottom: 8,
+    fontSize: 28, fontWeight: 'bold',
+    color: 'white', marginBottom: 8,
   },
-  subKichwa: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  form: {
-    paddingHorizontal: 20,
-    marginBottom: 24,
-  },
+  subKichwa: { fontSize: 16, fontWeight: 'bold', color: 'rgba(255,255,255,0.8)' },
+  form: { paddingHorizontal: 20, marginBottom: 24 },
   ingizoWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 16,
     gap: 12,
   },
-  ingizoIcon: {
-    fontSize: 20,
-    color: '#555',
-  },
-  ingizo: {
-    flex: 1,
-    fontSize: 16,
-    color: '#1a1a1a',
-  },
-  jicho: {
-    fontSize: 18,
-    padding: 4,
-  },
+  ingizoIcon: { fontSize: 20, color: 'rgba(255,255,255,0.7)' },
+  ingizo: { flex: 1, fontSize: 16, color: 'white' },
+  jicho: { fontSize: 18, padding: 4 },
   separator: {
     height: 1,
-    backgroundColor: '#ddd',
+    backgroundColor: 'rgba(255,255,255,0.2)',
     marginLeft: 36,
   },
   termsWrapper: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginTop: 20,
-    gap: 12,
+    marginTop: 20, gap: 12,
   },
   checkbox: {
-    width: 22,
-    height: 22,
+    width: 22, height: 22,
     borderWidth: 2,
-    borderColor: '#aaa',
+    borderColor: 'rgba(255,255,255,0.5)',
     borderRadius: 4,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: 'center', justifyContent: 'center',
     marginTop: 2,
   },
   checkboxAmilifu: {
-    backgroundColor: '#2196f3',
-    borderColor: '#2196f3',
+    backgroundColor: 'white',
+    borderColor: 'white',
   },
-  checkmark: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
+  checkmark: { color: '#880e4f', fontSize: 14, fontWeight: 'bold' },
   termsManeno: {
-    flex: 1,
-    color: '#555',
-    fontSize: 13,
-    lineHeight: 20,
+    flex: 1, color: 'rgba(255,255,255,0.7)',
+    fontSize: 13, lineHeight: 20,
   },
   termsLink: {
-    color: '#333',
+    color: 'white',
     textDecorationLine: 'underline',
     fontWeight: '600',
   },
-  chiniSehemu: {
-    paddingHorizontal: 20,
-    gap: 16,
-  },
+  chiniSehemu: { paddingHorizontal: 20, gap: 16 },
   continueKitufe: {
-    backgroundColor: '#2196f3',
-    borderRadius: 12,
-    padding: 18,
+    backgroundColor: 'white',
+    borderRadius: 30, padding: 18,
     alignItems: 'center',
   },
-  kitufeDisabled: {
-    opacity: 0.7,
-  },
-  continueManeno: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
+  kitufeDisabled: { opacity: 0.7 },
+  continueManeno: { color: '#880e4f', fontWeight: 'bold', fontSize: 16 },
   loginLink: {
-    color: '#555',
-    fontSize: 14,
-    textAlign: 'center',
+    color: 'rgba(255,255,255,0.7)',
+    fontSize: 14, textAlign: 'center',
   },
-  loginLinkBold: {
-    color: '#2196f3',
-    fontWeight: 'bold',
-  },
+  loginLinkBold: { color: 'white', fontWeight: 'bold' },
 });
