@@ -16,24 +16,21 @@ export default function LoginScreen({ navigation }) {
   const [nywila, setNywila] = useState('');
   const [inapakia, setInapakia] = useState(false);
   const [onyeshaNywila, setOnyeshaNywila] = useState(false);
+  const [tab, setTab] = useState('email');
 
   async function ingia() {
     if (!email || !nywila) {
       Alert.alert('Error', 'Please fill all fields!');
       return;
     }
-
     setInapakia(true);
-
     try {
       const jibu = await fetch('https://money-transfer-backend-production.up.railway.app/ingia', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, nywila }),
       });
-
       const data = await jibu.json();
-
       if (jibu.ok) {
         await AsyncStorage.setItem('mtumiaji', JSON.stringify(data.mtumiaji));
         navigation.replace('Main');
@@ -43,105 +40,122 @@ export default function LoginScreen({ navigation }) {
     } catch (e) {
       Alert.alert('Error', 'Network error!');
     }
-
     setInapakia(false);
   }
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#880e4f" />
+      <StatusBar barStyle="light-content" backgroundColor="#1a1a2e" />
 
       <ScrollView contentContainerStyle={styles.scroll}>
 
         {/* Header */}
-        <TouchableOpacity
-          style={styles.rudiKitufe}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={styles.rudiManeno}>←</Text>
-        </TouchableOpacity>
-
-        {/* Title */}
-        <Text style={styles.kichwa}>Log in</Text>
-        <Text style={styles.maelezo}>Welcome back to SendEasly</Text>
-
-        {/* Email Input */}
-        <View style={styles.ingizoWrapper}>
-          <Text style={styles.ingizoIcon}>✉</Text>
-          <TextInput
-            style={styles.ingizo}
-            placeholder="Email address"
-            placeholderTextColor="rgba(255,255,255,0.5)"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
-        </View>
-
-        {/* Password Input */}
-        <View style={styles.ingizoWrapper}>
-          <Text style={styles.ingizoIcon}>🔒</Text>
-          <TextInput
-            style={styles.ingizo}
-            placeholder="Password"
-            placeholderTextColor="rgba(255,255,255,0.5)"
-            value={nywila}
-            onChangeText={setNywila}
-            secureTextEntry={!onyeshaNywila}
-          />
-          <TouchableOpacity onPress={() => setOnyeshaNywila(!onyeshaNywila)}>
-            <Text style={styles.jicho}>
-              {onyeshaNywila ? '🙉' : '👁'}
-            </Text>
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.rudiKitufe}
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={styles.rudiManeno}>‹</Text>
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Log In</Text>
+          <TouchableOpacity style={styles.helpKitufe}>
+            <Text style={styles.helpManeno}>🎧</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Trouble logging in */}
-        <TouchableOpacity style={styles.tatizo}>
-          <Text style={styles.tatizoManeno}>Trouble logging in?</Text>
-        </TouchableOpacity>
-
-        {/* Login Button */}
-        <TouchableOpacity
-          style={[styles.loginKitufe, inapakia && styles.kitufeDisabled]}
-          onPress={ingia}
-          disabled={inapakia}
-        >
-          <Text style={styles.loginManeno}>
-            {inapakia ? 'Logging in...' : 'LOGIN'}
-          </Text>
-        </TouchableOpacity>
-
-        {/* Divider */}
-        <View style={styles.divider}>
-          <View style={styles.dividerMstari} />
-          <Text style={styles.dividerManeno}>OR LOGIN WITH</Text>
-          <View style={styles.dividerMstari} />
+        {/* Tabs */}
+        <View style={styles.tabs}>
+          <TouchableOpacity
+            style={[styles.tab, tab === 'phone' && styles.tabAmilifu]}
+            onPress={() => setTab('phone')}
+          >
+            <Text style={[styles.tabManeno, tab === 'phone' && styles.tabManenoAmilifu]}>
+              Phone number
+            </Text>
+            {tab === 'phone' && <View style={styles.tabLine} />}
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.tab, tab === 'email' && styles.tabAmilifu]}
+            onPress={() => setTab('email')}
+          >
+            <Text style={[styles.tabManeno, tab === 'email' && styles.tabManenoAmilifu]}>
+              Email
+            </Text>
+            {tab === 'email' && <View style={styles.tabLine} />}
+          </TouchableOpacity>
         </View>
 
-        {/* Google Button */}
-        <TouchableOpacity style={styles.socialKitufe}>
-          <Text style={styles.googleIcon}>G</Text>
-          <Text style={styles.socialManeno}>GOOGLE</Text>
-        </TouchableOpacity>
+        <View style={styles.dividerLine} />
 
-        {/* Apple Button */}
-        <TouchableOpacity style={styles.socialKitufe}>
-          <Text style={styles.appleIcon}></Text>
-          <Text style={styles.socialManeno}>APPLE</Text>
-        </TouchableOpacity>
+        {/* Inputs */}
+        <View style={styles.form}>
 
-        {/* Sign up link */}
-        <TouchableOpacity
-          style={styles.sajiliKitufe}
-          onPress={() => navigation.navigate('Register')}
-        >
-          <Text style={styles.sajiliManeno}>
-            Don't have an account?{' '}
-            <Text style={styles.sajiliLink}>Sign up</Text>
+          <View style={styles.ingizoWrapper}>
+            <TextInput
+              style={styles.ingizo}
+              placeholder={tab === 'email' ? 'Email' : 'Phone number'}
+              placeholderTextColor="#666"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType={tab === 'email' ? 'email-address' : 'phone-pad'}
+              autoCapitalize="none"
+            />
+          </View>
+
+          <View style={styles.ingizoWrapper}>
+            <TextInput
+              style={styles.ingizo}
+              placeholder="Password 8-16 characters"
+              placeholderTextColor="#666"
+              value={nywila}
+              onChangeText={setNywila}
+              secureTextEntry={!onyeshaNywila}
+            />
+            <TouchableOpacity onPress={() => setOnyeshaNywila(!onyeshaNywila)}>
+              <Text style={styles.jicho}>{onyeshaNywila ? '👁' : '🙈'}</Text>
+            </TouchableOpacity>
+          </View>
+
+          <Text style={styles.maelezo}>
+            After applying for a live account, you can login by email
           </Text>
-        </TouchableOpacity>
+
+          <TouchableOpacity>
+            <Text style={styles.forgotPassword}>Forgot Password?</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.loginKitufe, inapakia && styles.kitufeDisabled]}
+            onPress={ingia}
+            disabled={inapakia}
+          >
+            <Text style={styles.loginManeno}>
+              {inapakia ? 'Logging in...' : 'Log In'}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Register')}
+          >
+            <Text style={styles.newUser}>
+              New user? <Text style={styles.signUpLink}>Sign Up</Text>
+            </Text>
+          </TouchableOpacity>
+
+        </View>
+
+        {/* Social Login */}
+        <View style={styles.socialSehemu}>
+          <Text style={styles.socialManeno}>or Log In with</Text>
+          <View style={styles.socialVitufe}>
+            <TouchableOpacity style={styles.appleKitufe}>
+              <Text style={styles.appleIcon}></Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.googleKitufe}>
+              <Text style={styles.googleIcon}>G</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
 
       </ScrollView>
     </View>
@@ -151,141 +165,176 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#880e4f',
+    backgroundColor: '#111318',
   },
   scroll: {
     flexGrow: 1,
-    padding: 24,
-    paddingTop: 60,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 20,
+    paddingTop: 50,
   },
   rudiKitufe: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255,255,255,0.2)',
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#2a2a3a',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 32,
   },
   rudiManeno: {
+    color: 'white',
+    fontSize: 22,
+    fontWeight: 'bold',
+  },
+  headerTitle: {
     color: 'white',
     fontSize: 20,
     fontWeight: 'bold',
   },
-  kichwa: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 8,
+  helpKitufe: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#2a2a3a',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  maelezo: {
-    fontSize: 15,
-    color: 'rgba(255,255,255,0.7)',
-    marginBottom: 32,
+  helpManeno: {
+    fontSize: 16,
+  },
+  tabs: {
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    marginTop: 8,
+    gap: 24,
+  },
+  tab: {
+    paddingBottom: 12,
+    position: 'relative',
+  },
+  tabAmilifu: {},
+  tabManeno: {
+    color: '#666',
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  tabManenoAmilifu: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  tabLine: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 2,
+    backgroundColor: 'white',
+    borderRadius: 1,
+  },
+  dividerLine: {
+    height: 1,
+    backgroundColor: '#2a2a3a',
+    marginBottom: 24,
+  },
+  form: {
+    paddingHorizontal: 20,
   },
   ingizoWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    borderRadius: 12,
-    paddingHorizontal: 16,
+    backgroundColor: '#1e2030',
+    borderRadius: 30,
+    paddingHorizontal: 20,
     paddingVertical: 4,
     marginBottom: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.2)',
-    gap: 12,
-  },
-  ingizoIcon: {
-    fontSize: 18,
-    color: 'rgba(255,255,255,0.7)',
   },
   ingizo: {
     flex: 1,
     fontSize: 16,
     color: 'white',
-    paddingVertical: 14,
+    paddingVertical: 16,
   },
   jicho: {
     fontSize: 18,
     padding: 4,
   },
-  tatizo: {
-    marginBottom: 24,
+  maelezo: {
+    color: '#666',
+    fontSize: 13,
+    marginBottom: 12,
+    lineHeight: 18,
   },
-  tatizoManeno: {
-    color: 'rgba(255,255,255,0.8)',
+  forgotPassword: {
+    color: '#4f8ef7',
     fontSize: 14,
     fontWeight: '600',
+    marginBottom: 24,
   },
   loginKitufe: {
-    backgroundColor: 'white',
+    backgroundColor: '#2a2a3a',
     borderRadius: 30,
-    padding: 16,
+    padding: 18,
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: 20,
   },
   kitufeDisabled: {
     opacity: 0.7,
   },
   loginManeno: {
-    color: '#880e4f',
+    color: '#888',
     fontWeight: 'bold',
     fontSize: 16,
-    letterSpacing: 1,
   },
-  divider: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-    gap: 10,
+  newUser: {
+    color: 'white',
+    fontSize: 15,
+    textAlign: 'center',
+    marginBottom: 40,
   },
-  dividerMstari: {
-    flex: 1,
-    height: 1,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-  },
-  dividerManeno: {
-    fontSize: 12,
-    color: 'rgba(255,255,255,0.5)',
-    fontWeight: '600',
-  },
-  socialKitufe: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.3)',
-    borderRadius: 30,
-    padding: 14,
-    marginBottom: 12,
-    gap: 10,
-    backgroundColor: 'rgba(255,255,255,0.1)',
-  },
-  googleIcon: {
-    fontSize: 18,
+  signUpLink: {
+    color: '#4f8ef7',
     fontWeight: 'bold',
-    color: 'white',
   },
-  appleIcon: {
-    fontSize: 18,
-    color: 'white',
+  socialSehemu: {
+    alignItems: 'center',
+    paddingBottom: 40,
   },
   socialManeno: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: 'white',
-    letterSpacing: 1,
+    color: '#666',
+    fontSize: 14,
+    marginBottom: 20,
   },
-  sajiliKitufe: {
+  socialVitufe: {
+    flexDirection: 'row',
+    gap: 16,
+  },
+  appleKitufe: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: 'white',
     alignItems: 'center',
-    marginTop: 20,
+    justifyContent: 'center',
   },
-  sajiliManeno: {
-    color: 'rgba(255,255,255,0.7)',
-    fontSize: 15,
+  appleIcon: {
+    fontSize: 24,
+    color: 'black',
   },
-  sajiliLink: {
-    color: 'white',
+  googleKitufe: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#4f8ef7',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  googleIcon: {
+    fontSize: 22,
     fontWeight: 'bold',
+    color: 'white',
   },
 });
