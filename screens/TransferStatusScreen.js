@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import {
-    Animated,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Animated,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 export default function TransferStatusScreen({ navigation, route }) {
@@ -22,6 +22,30 @@ export default function TransferStatusScreen({ navigation, route }) {
   const [hali, setHali] = useState('processing');
   const spinValue = new Animated.Value(0);
 
+  useEffect(() => {
+    hifadhiHistoria();
+  }, []);
+
+  async function hifadhiHistoria() {
+    try {
+      const existing = await AsyncStorage.getItem('historia');
+      const historia = existing ? JSON.parse(existing) : [];
+      const muamala = {
+        kiasi,
+        kutoka,
+        kwenda,
+        mpokeaji,
+        mpokeajiJina,
+        mpokeajiNchi,
+        mpokeajiBendera,
+        tarehe: new Date().toLocaleDateString('en-GB'),
+      };
+      historia.unshift(muamala);
+      await AsyncStorage.setItem('historia', JSON.stringify(historia));
+    } catch (e) {
+      console.log(e);
+    }
+  }
   useEffect(() => {
     Animated.loop(
       Animated.timing(spinValue, {

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import {
   Alert,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -44,109 +45,109 @@ export default function ProfileScreen() {
       })
     );
   }
+
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#880e4f" />
 
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.rudiKitufe}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={styles.rudiManeno}>‹</Text>
-        </TouchableOpacity>
-      </View>
+      <ScrollView contentContainerStyle={styles.scroll}>
 
-      {/* Avatar */}
-      <View style={styles.avatarSehemu}>
-        <View style={styles.avatar}>
-          <Text style={styles.avatarManeno}>
-            {mtumiaji ? mtumiaji.jina.charAt(0).toUpperCase() : 'SE'}
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.rudiKitufe}
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={styles.rudiManeno}>←</Text>
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Profile</Text>
+          <View style={{ width: 40 }} />
+        </View>
+
+        {/* Avatar */}
+        <View style={styles.avatarSehemu}>
+          <View style={styles.avatar}>
+            <Text style={styles.avatarManeno}>
+              {mtumiaji ? mtumiaji.jina.charAt(0).toUpperCase() : 'SE'}
+            </Text>
+          </View>
+          <Text style={styles.jinaManeno}>
+            {mtumiaji ? mtumiaji.jina : 'My Profile'}
+          </Text>
+          <Text style={styles.emailManeno}>
+            {mtumiaji ? mtumiaji.email : ''}
           </Text>
         </View>
-        <Text style={styles.jinaManeno}>
-          {mtumiaji ? mtumiaji.jina : 'My Profile'}
-        </Text>
-      </View>
 
-      {/* Menu Items */}
-      <View style={styles.menuKadi}>
-        {menuItems.map((item, index) => (
-          <TouchableOpacity
-            key={item.id}
-            style={[
-              styles.menuItem,
-              index < menuItems.length - 1 && styles.menuItemBorder,
-            ]}
-            onPress={() => Alert.alert(item.jina, 'Coming soon!')}
-          >
-            <View style={styles.menuIconSehemu}>
-              <Text style={styles.menuIcon}>{item.icon}</Text>
-            </View>
-            <Text style={styles.menuManeno}>{item.jina}</Text>
-            <Text style={styles.menuMshale}>›</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+        {/* Menu Items */}
+        <View style={styles.menuKadi}>
+          {menuItems.map((item, index) => (
+            <TouchableOpacity
+              key={item.id}
+              style={[
+                styles.menuItem,
+                index < menuItems.length - 1 && styles.menuItemBorder,
+              ]}
+              onPress={() => Alert.alert(item.jina, 'Coming soon!')}
+            >
+              <View style={styles.menuIconSehemu}>
+                <Text style={styles.menuIcon}>{item.icon}</Text>
+              </View>
+              <Text style={styles.menuManeno}>{item.jina}</Text>
+              <Text style={styles.menuMshale}>›</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
 
-      {/* Log out */}
-      <TouchableOpacity style={styles.tokaKitufe} onPress={toka}>
-        <Text style={styles.tokaManeno}>Log out</Text>
-      </TouchableOpacity>
+        {/* Log out */}
+        <TouchableOpacity style={styles.tokaKitufe} onPress={toka}>
+          <Text style={styles.tokaManeno}>Log out</Text>
+        </TouchableOpacity>
 
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
+  container: { flex: 1, backgroundColor: '#880e4f' },
+  scroll: { flexGrow: 1, paddingBottom: 40 },
   header: {
-    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 20,
     paddingTop: 50,
   },
   rudiKitufe: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#f0f0f0',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: 40, height: 40, borderRadius: 20,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    alignItems: 'center', justifyContent: 'center',
   },
-  rudiManeno: {
-    fontSize: 24,
-    color: '#1a1a1a',
-  },
+  rudiManeno: { color: 'white', fontSize: 20, fontWeight: 'bold' },
+  headerTitle: { color: 'white', fontSize: 18, fontWeight: 'bold' },
   avatarSehemu: {
     alignItems: 'center',
     paddingVertical: 24,
   },
   avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: '#c2185b',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: 80, height: 80, borderRadius: 40,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    alignItems: 'center', justifyContent: 'center',
     marginBottom: 12,
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.4)',
   },
-  avatarManeno: {
-    color: 'white',
-    fontSize: 28,
-    fontWeight: 'bold',
-  },
-  jinaManeno: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#1a1a1a',
-  },
+  avatarManeno: { color: 'white', fontSize: 28, fontWeight: 'bold' },
+  jinaManeno: { color: 'white', fontSize: 20, fontWeight: 'bold', marginBottom: 4 },
+  emailManeno: { color: 'rgba(255,255,255,0.6)', fontSize: 14 },
   menuKadi: {
-    backgroundColor: 'white',
+    backgroundColor: 'rgba(255,255,255,0.15)',
     marginHorizontal: 16,
     borderRadius: 16,
     marginBottom: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
   },
   menuItem: {
     flexDirection: 'row',
@@ -156,40 +157,25 @@ const styles = StyleSheet.create({
   },
   menuItemBorder: {
     borderBottomWidth: 1,
-    borderBottomColor: '#f5f5f5',
+    borderBottomColor: 'rgba(255,255,255,0.1)',
   },
   menuIconSehemu: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: '#f5f5f5',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: 44, height: 44, borderRadius: 22,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    alignItems: 'center', justifyContent: 'center',
   },
-  menuIcon: {
-    fontSize: 20,
-  },
-  menuManeno: {
-    flex: 1,
-    fontSize: 16,
-    color: '#1a1a1a',
-    fontWeight: '500',
-  },
-  menuMshale: {
-    fontSize: 22,
-    color: '#c2185b',
-  },
+  menuIcon: { fontSize: 20 },
+  menuManeno: { flex: 1, fontSize: 16, color: 'white', fontWeight: '500' },
+  menuMshale: { fontSize: 22, color: 'rgba(255,255,255,0.6)' },
   tokaKitufe: {
-    backgroundColor: 'white',
+    backgroundColor: 'rgba(255,255,255,0.15)',
     marginHorizontal: 16,
     borderRadius: 16,
     padding: 16,
     alignItems: 'center',
     marginBottom: 30,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
   },
-  tokaManeno: {
-    color: '#e53e3e',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
+  tokaManeno: { color: '#ff6b6b', fontSize: 16, fontWeight: 'bold' },
 });
