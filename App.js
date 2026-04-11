@@ -7,11 +7,13 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import ActivityScreen from './screens/ActivityScreen';
 import ConfirmScreen from './screens/ConfirmScreen';
+import ConfirmTransferScreen from './screens/ConfirmTransferScreen';
 import HomeScreen from './screens/HomeScreen';
 import LandingScreen from './screens/LandingScreen';
 import LoginScreen from './screens/LoginScreen';
 import PaymentMethodScreen from './screens/PaymentMethodScreen';
 import ProfileScreen from './screens/ProfileScreen';
+import RecipientDetailsScreen from './screens/RecipientDetailsScreen';
 import RecipientScreen from './screens/RecipientScreen';
 import ReferralsScreen from './screens/ReferralsScreen';
 import RegisterScreen from './screens/RegisterScreen';

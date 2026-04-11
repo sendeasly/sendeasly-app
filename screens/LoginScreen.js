@@ -2,6 +2,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState } from 'react';
 import {
   Alert,
+  FlatList,
+  Modal,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -11,15 +13,31 @@ import {
   View,
 } from 'react-native';
 
+const eaCountries = [
+  { jina: 'Tanzania', code: '+255', bendera: '🇹🇿' },
+  { jina: 'Kenya', code: '+254', bendera: '🇰🇪' },
+  { jina: 'Uganda', code: '+256', bendera: '🇺🇬' },
+  { jina: 'Rwanda', code: '+250', bendera: '🇷🇼' },
+  { jina: 'Ethiopia', code: '+251', bendera: '🇪🇹' },
+  { jina: 'Somalia', code: '+252', bendera: '🇸🇴' },
+  { jina: 'Burundi', code: '+257', bendera: '🇧🇮' },
+  { jina: 'South Sudan', code: '+211', bendera: '🇸🇸' },
+  { jina: 'Eritrea', code: '+291', bendera: '🇪🇷' },
+  { jina: 'Djibouti', code: '+253', bendera: '🇩🇯' },
+];
+
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
+  const [simu, setSimu] = useState('');
   const [nywila, setNywila] = useState('');
   const [inapakia, setInapakia] = useState(false);
   const [onyeshaNywila, setOnyeshaNywila] = useState(false);
   const [tab, setTab] = useState('email');
+  const [nchi, setNchi] = useState(eaCountries[0]);
+  const [modalWazi, setModalWazi] = useState(false);
 
   async function ingia() {
-    if (!email || !nywila) {
+    if (tab === 'email' && (!email || !nywila)) {
       Alert.alert('Error', 'Please fill all fields!');
       return;
     }
@@ -46,6 +64,41 @@ export default function LoginScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#880e4f" />
+
+      {/* Country Modal */}
+      <Modal
+        visible={modalWazi}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setModalWazi(false)}
+      >
+        <View style={styles.modalBg}>
+          <View style={styles.modalKadi}>
+            <Text style={styles.modalKichwa}>Select Country</Text>
+            <FlatList
+              data={eaCountries}
+              keyExtractor={(item) => item.code}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.modalItem}
+                  onPress={() => { setNchi(item); setModalWazi(false); }}
+                >
+                  <Text style={styles.modalBendera}>{item.bendera}</Text>
+                  <Text style={styles.modalJina}>{item.jina}</Text>
+                  <Text style={styles.modalCode}>{item.code}</Text>
+                </TouchableOpacity>
+              )}
+            />
+            <TouchableOpacity
+              style={styles.modalFunga}
+              onPress={() => setModalWazi(false)}
+            >
+              <Text style={styles.modalFungaManeno}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
       <ScrollView contentContainerStyle={styles.scroll}>
 
         {/* Header */}
@@ -78,18 +131,46 @@ export default function LoginScreen({ navigation }) {
 
         {/* Form */}
         <View style={styles.form}>
-          <View style={styles.ingizoWrapper}>
-            <TextInput
-              style={styles.ingizo}
-              placeholder={tab === 'email' ? 'Email' : 'Phone number'}
-              placeholderTextColor="rgba(255,255,255,0.4)"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType={tab === 'email' ? 'email-address' : 'phone-pad'}
-              autoCapitalize="none"
-            />
-          </View>
 
+          {/* Phone Tab */}
+          {tab === 'phone' && (
+            <View style={styles.simuWrapper}>
+              <TouchableOpacity
+                style={styles.countryCode}
+                onPress={() => setModalWazi(true)}
+              >
+                <Text style={styles.bendera}>{nchi.bendera}</Text>
+                <Text style={styles.codeManeno}>{nchi.code}</Text>
+                <Text style={styles.chevron}>▾</Text>
+              </TouchableOpacity>
+              <View style={styles.simuSeparator} />
+              <TextInput
+                style={styles.simuIngizo}
+                placeholder="Phone number"
+                placeholderTextColor="rgba(255,255,255,0.4)"
+                value={simu}
+                onChangeText={setSimu}
+                keyboardType="phone-pad"
+              />
+            </View>
+          )}
+
+          {/* Email Tab */}
+          {tab === 'email' && (
+            <View style={styles.ingizoWrapper}>
+              <TextInput
+                style={styles.ingizo}
+                placeholder="Email"
+                placeholderTextColor="rgba(255,255,255,0.4)"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+            </View>
+          )}
+
+          {/* Password */}
           <View style={styles.ingizoWrapper}>
             <TextInput
               style={styles.ingizo}
@@ -173,8 +254,7 @@ const styles = StyleSheet.create({
   tabs: {
     flexDirection: 'row',
     paddingHorizontal: 20,
-    marginTop: 16,
-    gap: 24,
+    marginTop: 16, gap: 24,
   },
   tab: { paddingBottom: 12, position: 'relative' },
   tabManeno: { color: 'rgba(255,255,255,0.5)', fontSize: 16, fontWeight: '500' },
@@ -185,6 +265,32 @@ const styles = StyleSheet.create({
   },
   dividerLine: { height: 1, backgroundColor: 'rgba(255,255,255,0.15)', marginBottom: 24 },
   form: { paddingHorizontal: 20 },
+  simuWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    borderRadius: 30,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
+    overflow: 'hidden',
+  },
+  countryCode: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 16,
+    gap: 6,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+  },
+  bendera: { fontSize: 20 },
+  codeManeno: { color: 'white', fontSize: 15, fontWeight: '600' },
+  chevron: { color: 'rgba(255,255,255,0.6)', fontSize: 12 },
+  simuSeparator: { width: 1, height: 30, backgroundColor: 'rgba(255,255,255,0.2)' },
+  simuIngizo: {
+    flex: 1, color: 'white', fontSize: 16,
+    paddingHorizontal: 14, paddingVertical: 16,
+  },
   ingizoWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -195,9 +301,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.2)',
   },
-  ingizo: {
-    flex: 1, fontSize: 16, color: 'white', paddingVertical: 16,
-  },
+  ingizo: { flex: 1, fontSize: 16, color: 'white', paddingVertical: 16 },
   jicho: { fontSize: 18, padding: 4 },
   maelezo: {
     color: 'rgba(255,255,255,0.5)', fontSize: 13,
@@ -236,4 +340,38 @@ const styles = StyleSheet.create({
     borderWidth: 1, borderColor: 'rgba(255,255,255,0.3)',
   },
   googleIcon: { fontSize: 22, fontWeight: 'bold', color: 'white' },
+  modalBg: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalKadi: {
+    backgroundColor: 'white',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    maxHeight: '70%',
+  },
+  modalKichwa: {
+    fontSize: 18, fontWeight: 'bold',
+    color: '#880e4f', marginBottom: 16,
+    textAlign: 'center',
+  },
+  modalItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f5f5f5',
+    gap: 12,
+  },
+  modalBendera: { fontSize: 24 },
+  modalJina: { flex: 1, fontSize: 16, color: '#1a1a1a', fontWeight: '500' },
+  modalCode: { fontSize: 14, color: '#888' },
+  modalFunga: {
+    backgroundColor: '#f5f5f5',
+    borderRadius: 12, padding: 14,
+    alignItems: 'center', marginTop: 12,
+  },
+  modalFungaManeno: { color: '#880e4f', fontWeight: 'bold', fontSize: 16 },
 });

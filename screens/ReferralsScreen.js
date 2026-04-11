@@ -1,166 +1,152 @@
 import {
+  Linking,
   ScrollView,
+  Share,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 
+const APK_LINK = 'https://expo.dev/accounts/brown94/projects/sendeasly-app/builds/16ce1eb2-3a0d-4ec5-a4f6-235305a6ac15';
+
 export default function ReferralsScreen() {
+
+  async function shareInvite() {
+    try {
+      await Share.share({
+        message:
+          `Join me on SendEasly — the fastest way to send money!\n` +
+          `Download the app here: ${APK_LINK}`,
+        url: APK_LINK,
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  async function fungaPlayStore() {
+    try {
+      await Linking.openURL(APK_LINK);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.kichwa}>Referrals</Text>
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#880e4f" />
 
-      {/* Bonus Card */}
-      <View style={styles.bonusKadi}>
-        <Text style={styles.bonusEmoji}>🎁</Text>
-        <Text style={styles.bonusKichwa}>Invite friends</Text>
-        <Text style={styles.bonusMaelezo}>
-          Invite your friends to SendEasly and earn €10 
-          for every friend who sends money!
-        </Text>
-        <TouchableOpacity style={styles.shareKitufe}>
-          <Text style={styles.shareManeno}>Share Invite Link</Text>
-        </TouchableOpacity>
-      </View>
+      <ScrollView contentContainerStyle={styles.scroll}>
 
-      {/* Jinsi Inavyofanya Kazi */}
-      <View style={styles.jinsiKadi}>
-        <Text style={styles.jinsiKichwa}>How it works</Text>
+        <Text style={styles.kichwa}>Referrals</Text>
 
-        <View style={styles.hatua}>
-          <View style={styles.nambari}>
-            <Text style={styles.nambariManeno}>1</Text>
-          </View>
-          <View style={styles.hatuaMaelezo}>
-            <Text style={styles.hatuaKichwa}>Share your link</Text>
-            <Text style={styles.hatuaManeno}>
-              Send your unique invite link to friends
-            </Text>
-          </View>
+        {/* Bonus Card */}
+        <View style={styles.bonusKadi}>
+          <Text style={styles.bonusEmoji}>🎁</Text>
+          <Text style={styles.bonusKichwa}>Invite friends</Text>
+          <Text style={styles.bonusMaelezo}>
+            Invite your friends to SendEasly and earn €5
+            for every friend who sends money!
+          </Text>
+
+          <TouchableOpacity style={styles.shareKitufe} onPress={shareInvite}>
+            <Text style={styles.shareManeno}>Share Invite Link</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.playStoreKitufe} onPress={fungaPlayStore}>
+            <Text style={styles.playStoreManeno}>▶  View on Play Store</Text>
+          </TouchableOpacity>
         </View>
 
-        <View style={styles.hatua}>
-          <View style={styles.nambari}>
-            <Text style={styles.nambariManeno}>2</Text>
-          </View>
-          <View style={styles.hatuaMaelezo}>
-            <Text style={styles.hatuaKichwa}>Friend signs up</Text>
-            <Text style={styles.hatuaManeno}>
-              Your friend creates a SendEasly account
-            </Text>
-          </View>
+        {/* Jinsi Inavyofanya Kazi */}
+        <View style={styles.jinsiKadi}>
+          <Text style={styles.jinsiKichwa}>How it works</Text>
+
+          {[
+            { nambari: '1', kichwa: 'Share your link', maelezo: 'Send your unique invite link to friends' },
+            { nambari: '2', kichwa: 'Friend signs up', maelezo: 'Your friend creates a SendEasly account' },
+            { nambari: '3', kichwa: 'You both earn €5', maelezo: 'After their first transfer, you both get €5!' },
+          ].map((hatua) => (
+            <View key={hatua.nambari} style={styles.hatua}>
+              <View style={styles.nambariKiri}>
+                <Text style={styles.nambariManeno}>{hatua.nambari}</Text>
+              </View>
+              <View style={styles.hatuaMaelezo}>
+                <Text style={styles.hatuaKichwa}>{hatua.kichwa}</Text>
+                <Text style={styles.hatuaManeno}>{hatua.maelezo}</Text>
+              </View>
+            </View>
+          ))}
         </View>
 
-        <View style={styles.hatua}>
-          <View style={styles.nambari}>
-            <Text style={styles.nambariManeno}>3</Text>
-          </View>
-          <View style={styles.hatuaMaelezo}>
-            <Text style={styles.hatuaKichwa}>You both earn €5</Text>
-            <Text style={styles.hatuaManeno}>
-              After their first transfer, you both get €5!
-            </Text>
-          </View>
-        </View>
-
-      </View>
-
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-    padding: 20,
-  },
+  container: { flex: 1, backgroundColor: '#880e4f' },
+  scroll: { flexGrow: 1, padding: 20, paddingTop: 50, paddingBottom: 40 },
   kichwa: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#c2185b',
-    marginTop: 50,
-    marginBottom: 24,
+    fontSize: 28, fontWeight: 'bold',
+    color: 'white', marginBottom: 24,
   },
   bonusKadi: {
-    backgroundColor: '#fab5d1',
-    borderRadius: 16,
-    padding: 24,
-    alignItems: 'center',
-    marginBottom: 16,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    borderRadius: 20, padding: 24,
+    alignItems: 'center', marginBottom: 16,
+    borderWidth: 1, borderColor: 'rgba(255,255,255,0.2)',
   },
-  bonusEmoji: {
-    fontSize: 50,
-    marginBottom: 12,
-  },
+  bonusEmoji: { fontSize: 50, marginBottom: 12 },
   bonusKichwa: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#c2185b',
-    marginBottom: 8,
+    fontSize: 22, fontWeight: 'bold',
+    color: 'white', marginBottom: 8,
   },
   bonusMaelezo: {
-    fontSize: 15,
-    color: '#c2185b',
-    textAlign: 'center',
-    lineHeight: 22,
-    marginBottom: 20,
+    fontSize: 15, color: 'rgba(255,255,255,0.7)',
+    textAlign: 'center', lineHeight: 22, marginBottom: 20,
   },
   shareKitufe: {
-    backgroundColor: '#c2185b',
-    paddingHorizontal: 32,
-    paddingVertical: 14,
-    borderRadius: 30,
-  },
-  shareManeno: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  jinsiKadi: {
     backgroundColor: 'white',
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 16,
+    paddingHorizontal: 32, paddingVertical: 14,
+    borderRadius: 30, marginBottom: 12, width: '100%',
+    alignItems: 'center',
+  },
+  shareManeno: { color: '#880e4f', fontWeight: 'bold', fontSize: 16 },
+  playStoreKitufe: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    paddingHorizontal: 32, paddingVertical: 14,
+    borderRadius: 30, width: '100%',
+    alignItems: 'center',
+    borderWidth: 1, borderColor: 'rgba(255,255,255,0.3)',
+  },
+  playStoreManeno: { color: 'white', fontWeight: 'bold', fontSize: 16 },
+  jinsiKadi: {
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    borderRadius: 20, padding: 20,
+    borderWidth: 1, borderColor: 'rgba(255,255,255,0.2)',
   },
   jinsiKichwa: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#c2185b',
-    marginBottom: 20,
+    fontSize: 18, fontWeight: 'bold',
+    color: 'white', marginBottom: 20,
   },
   hatua: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginBottom: 20,
-    gap: 16,
+    marginBottom: 20, gap: 16,
   },
-  nambari: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#c2185b',
-    alignItems: 'center',
-    justifyContent: 'center',
+  nambariKiri: {
+    width: 32, height: 32, borderRadius: 16,
+    backgroundColor: 'rgba(255,255,255,0.3)',
+    alignItems: 'center', justifyContent: 'center',
   },
-  nambariManeno: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  hatuaMaelezo: {
-    flex: 1,
-  },
+  nambariManeno: { color: 'white', fontWeight: 'bold', fontSize: 16 },
+  hatuaMaelezo: { flex: 1 },
   hatuaKichwa: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#c2185b',
-    marginBottom: 4,
+    fontSize: 16, fontWeight: 'bold',
+    color: 'white', marginBottom: 4,
   },
-  hatuaManeno: {
-    fontSize: 14,
-    color: '#888',
-    lineHeight: 20,
-  },
+  hatuaManeno: { fontSize: 14, color: 'rgba(255,255,255,0.6)', lineHeight: 20 },
 });

@@ -1,7 +1,8 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import {
   Animated,
+  ScrollView,
+  Share,
   StatusBar,
   StyleSheet,
   Text,
@@ -18,35 +19,13 @@ export default function TransferStatusScreen({ navigation, route }) {
     mpokeajiJina,
     mpokeajiNchi,
     mpokeajiBendera,
+    mpokeajiSimu,
+    mfumo,
   } = route.params || {};
 
   const [hali, setHali] = useState('processing');
   const spinValue = new Animated.Value(0);
 
-  useEffect(() => {
-    hifadhiHistoria();
-  }, []);
-
-  async function hifadhiHistoria() {
-    try {
-      const existing = await AsyncStorage.getItem('historia');
-      const historia = existing ? JSON.parse(existing) : [];
-      const muamala = {
-        kiasi,
-        kutoka,
-        kwenda,
-        mpokeaji,
-        mpokeajiJina,
-        mpokeajiNchi,
-        mpokeajiBendera,
-        tarehe: new Date().toLocaleDateString('en-GB'),
-      };
-      historia.unshift(muamala);
-      await AsyncStorage.setItem('historia', JSON.stringify(historia));
-    } catch (e) {
-      console.log(e);
-    }
-  }
   useEffect(() => {
     Animated.loop(
       Animated.timing(spinValue, {
@@ -55,7 +34,6 @@ export default function TransferStatusScreen({ navigation, route }) {
         useNativeDriver: true,
       })
     ).start();
-
     setTimeout(() => setHali('success'), 3000);
   }, []);
 
@@ -64,63 +42,80 @@ export default function TransferStatusScreen({ navigation, route }) {
     outputRange: ['0deg', '360deg'],
   });
 
+  async function shareReceipt() {
+    try {
+      await Share.share({
+        message:
+          `SendEasly Transfer Receipt\n` +
+          `Amount: ${kiasi} ${kutoka}\n` +
+          `Recipient: ${mpokeajiJina}\n` +
+          `They receive: ${mpokeaji} ${kwenda}\n` +
+          `Method: ${mfumo}\n` +
+          `Date: ${new Date().toLocaleDateString('en-GB')}\n` +
+          `Status: Completed ✅`,
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#880e4f" />
 
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.rudiKitufe}
-          onPress={() => navigation.navigate('Main')}
-        >
-          <Text style={styles.rudiManeno}>✕</Text>
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Transfer Status</Text>
-        <View style={{ width: 40 }} />
-      </View>
+      <ScrollView contentContainerStyle={styles.scroll}>
 
-      <View style={styles.content}>
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.rudiKitufe}
+            onPress={() => navigation.navigate('Main')}
+          >
+            <Text style={styles.rudiManeno}>✕</Text>
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Transfer Status</Text>
+          <View style={{ width: 40 }} />
+        </View>
 
         {/* Status Icon */}
-        {hali === 'processing' ? (
-          <Animated.View style={[styles.statusIcon, {transform: [{rotate: spin}]}]}>
-            <Text style={styles.statusEmoji}>⏳</Text>
-          </Animated.View>
-        ) : (
-          <View style={[styles.statusIcon, styles.successIcon]}>
-            <Text style={styles.statusEmoji}>✅</Text>
-          </View>
-        )}
+        <View style={styles.statusSehemu}>
+          {hali === 'processing' ? (
+            <Animated.View style={[styles.statusIcon, { transform: [{ rotate: spin }] }]}>
+              <Text style={styles.statusEmoji}>⏳</Text>
+            </Animated.View>
+          ) : (
+            <View style={[styles.statusIcon, styles.successIcon]}>
+              <Text style={styles.statusEmoji}>✅</Text>
+            </View>
+          )}
 
-        <Text style={styles.statusKichwa}>
-          {hali === 'processing' ? 'Processing...' : 'Transfer Successful!'}
-        </Text>
-        <Text style={styles.statusMaelezo}>
-          {hali === 'processing'
-            ? 'Please wait while we process your transfer'
-            : 'Your money has been sent successfully'}
-        </Text>
+          <Text style={styles.statusKichwa}>
+            {hali === 'processing' ? 'Processing...' : 'Transfer Successful!'}
+          </Text>
+          <Text style={styles.statusMaelezo}>
+            {hali === 'processing'
+              ? 'Please wait while we process your transfer'
+              : 'Your money has been sent successfully'}
+          </Text>
+        </View>
 
         {/* Transfer Details */}
-        <View style={styles.detailsKadi}>
-          <Text style={styles.detailsKichwa}>Transfer Details</Text>
+        <View style={styles.kadi}>
+          <Text style={styles.kadiKichwa}>Transfer Details</Text>
 
           <View style={styles.mstari}>
             <Text style={styles.mstariLebo}>Amount sent</Text>
             <Text style={styles.mstariThamani}>{kiasi} {kutoka}</Text>
           </View>
-
-          <View style={styles.divider} />
+          <View style={styles.mgawanyo} />
 
           <View style={styles.mstari}>
             <Text style={styles.mstariLebo}>Recipient receives</Text>
-            <Text style={[styles.mstariThamani, {color: '#f8bbd0'}]}>
+            <Text style={[styles.mstariThamani, { color: '#f8bbd0' }]}>
               {mpokeaji} {kwenda}
             </Text>
           </View>
-
-          <View style={styles.divider} />
+          <View style={styles.mgawanyo} />
 
           <View style={styles.mstari}>
             <Text style={styles.mstariLebo}>Recipient</Text>
@@ -128,15 +123,19 @@ export default function TransferStatusScreen({ navigation, route }) {
               {mpokeajiBendera} {mpokeajiJina}
             </Text>
           </View>
-
-          <View style={styles.divider} />
+          <View style={styles.mgawanyo} />
 
           <View style={styles.mstari}>
             <Text style={styles.mstariLebo}>Country</Text>
             <Text style={styles.mstariThamani}>{mpokeajiNchi}</Text>
           </View>
+          <View style={styles.mgawanyo} />
 
-          <View style={styles.divider} />
+          <View style={styles.mstari}>
+            <Text style={styles.mstariLebo}>Payment method</Text>
+            <Text style={styles.mstariThamani}>{mfumo}</Text>
+          </View>
+          <View style={styles.mgawanyo} />
 
           <View style={styles.mstari}>
             <Text style={styles.mstariLebo}>Status</Text>
@@ -146,8 +145,7 @@ export default function TransferStatusScreen({ navigation, route }) {
               </Text>
             </View>
           </View>
-
-          <View style={styles.divider} />
+          <View style={styles.mgawanyo} />
 
           <View style={styles.mstari}>
             <Text style={styles.mstariLebo}>Date</Text>
@@ -155,7 +153,6 @@ export default function TransferStatusScreen({ navigation, route }) {
               {new Date().toLocaleDateString('en-GB')}
             </Text>
           </View>
-
         </View>
 
         {/* Buttons */}
@@ -170,23 +167,21 @@ export default function TransferStatusScreen({ navigation, route }) {
 
             <TouchableOpacity
               style={styles.shareKitufe}
-              onPress={() => navigation.navigate('Main')}
+              onPress={shareReceipt}
             >
               <Text style={styles.shareManeno}>Share Receipt</Text>
             </TouchableOpacity>
           </View>
         )}
 
-      </View>
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#880e4f',
-  },
+  container: { flex: 1, backgroundColor: '#880e4f' },
+  scroll: { flexGrow: 1, paddingBottom: 40 },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -195,70 +190,38 @@ const styles = StyleSheet.create({
     paddingTop: 50,
   },
   rudiKitufe: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 40, height: 40, borderRadius: 20,
     backgroundColor: 'rgba(255,255,255,0.2)',
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: 'center', justifyContent: 'center',
   },
-  rudiManeno: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  headerTitle: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  content: {
-    flex: 1,
-    padding: 20,
-    alignItems: 'center',
-  },
+  rudiManeno: { color: 'white', fontSize: 18, fontWeight: 'bold' },
+  headerTitle: { color: 'white', fontSize: 18, fontWeight: 'bold' },
+  statusSehemu: { alignItems: 'center', padding: 24 },
   statusIcon: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 80, height: 80, borderRadius: 40,
     backgroundColor: 'rgba(255,255,255,0.2)',
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: 'center', justifyContent: 'center',
     marginBottom: 16,
   },
-  successIcon: {
-    backgroundColor: 'rgba(255,255,255,0.3)',
-  },
-  statusEmoji: {
-    fontSize: 36,
-  },
+  successIcon: { backgroundColor: 'rgba(255,255,255,0.3)' },
+  statusEmoji: { fontSize: 36 },
   statusKichwa: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 8,
-    textAlign: 'center',
+    fontSize: 24, fontWeight: 'bold', color: 'white',
+    marginBottom: 8, textAlign: 'center',
   },
   statusMaelezo: {
-    fontSize: 14,
-    color: 'rgba(255,255,255,0.7)',
-    textAlign: 'center',
-    marginBottom: 24,
+    fontSize: 14, color: 'rgba(255,255,255,0.7)',
+    textAlign: 'center', marginBottom: 8,
   },
-  detailsKadi: {
+  kadi: {
     backgroundColor: 'rgba(255,255,255,0.15)',
-    borderRadius: 16,
-    padding: 20,
-    width: '100%',
-    marginBottom: 24,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.2)',
+    marginHorizontal: 16, borderRadius: 16,
+    padding: 20, marginBottom: 24,
+    borderWidth: 1, borderColor: 'rgba(255,255,255,0.2)',
   },
-  detailsKichwa: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 16,
+  kadiKichwa: {
+    color: 'white', fontSize: 16,
+    fontWeight: 'bold', marginBottom: 16,
   },
   mstari: {
     flexDirection: 'row',
@@ -266,59 +229,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
   },
-  mstariLebo: {
-    color: 'rgba(255,255,255,0.7)',
-    fontSize: 14,
-  },
-  mstariThamani: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  divider: {
-    height: 1,
-    backgroundColor: 'rgba(255,255,255,0.1)',
-  },
+  mstariLebo: { color: 'rgba(255,255,255,0.7)', fontSize: 14 },
+  mstariThamani: { color: 'white', fontSize: 14, fontWeight: '600' },
+  mgawanyo: { height: 1, backgroundColor: 'rgba(255,255,255,0.1)' },
   haliBadge: {
     backgroundColor: 'rgba(255,165,0,0.3)',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 20,
+    paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20,
   },
-  haliBadgeSuccess: {
-    backgroundColor: 'rgba(0,200,0,0.3)',
-  },
-  haliBadgeManeno: {
-    color: 'white',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  vitufe: {
-    width: '100%',
-    gap: 12,
-  },
+  haliBadgeSuccess: { backgroundColor: 'rgba(107,255,107,0.2)' },
+  haliBadgeManeno: { color: 'white', fontSize: 12, fontWeight: '600' },
+  vitufe: { paddingHorizontal: 16, gap: 12 },
   nyumbaKitufe: {
     backgroundColor: 'white',
-    borderRadius: 30,
-    padding: 16,
-    alignItems: 'center',
+    borderRadius: 30, padding: 16, alignItems: 'center',
   },
-  nyumbaManeno: {
-    color: '#880e4f',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
+  nyumbaManeno: { color: '#880e4f', fontWeight: 'bold', fontSize: 16 },
   shareKitufe: {
     backgroundColor: 'rgba(255,255,255,0.2)',
-    borderRadius: 30,
-    padding: 16,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.3)',
+    borderRadius: 30, padding: 16, alignItems: 'center',
+    borderWidth: 1, borderColor: 'rgba(255,255,255,0.3)',
   },
-  shareManeno: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
+  shareManeno: { color: 'white', fontWeight: 'bold', fontSize: 16 },
 });
