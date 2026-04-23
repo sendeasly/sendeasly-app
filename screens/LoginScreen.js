@@ -43,7 +43,7 @@ export default function LoginScreen({ navigation }) {
     }
     setInapakia(true);
     try {
-      const jibu = await fetch('https://money-transfer-backend-production.up.railway.app/ingia', {
+      const jibu = await fetch('http://localhost:5001/ingia', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, nywila }),

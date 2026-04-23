@@ -19,6 +19,13 @@ import ReferralsScreen from './screens/ReferralsScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import TransferStatusScreen from './screens/TransferStatusScreen';
 
+import ConfirmEmailScreen from './screens/ConfirmEmailScreen';
+import OTPScreen from './screens/OTPScreen';
+import PersonalDetailsScreen from './screens/PersonalDetailsScreen';
+import PhoneNumberScreen from './screens/PhoneNumberScreen';
+import SelectCountryScreen from './screens/SelectCountryScreen';
+import SendCountryScreen from './screens/SendCountryScreen';
+
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
@@ -89,6 +96,14 @@ function App() {
           <Stack.Screen name="TransferStatus" component={TransferStatusScreen} />
           <Stack.Screen name="RecipientDetails" component={RecipientDetailsScreen} />
           <Stack.Screen name="ConfirmTransfer" component={ConfirmTransferScreen} />
+
+          <Stack.Screen name="SelectCountry" component={SelectCountryScreen} />
+          <Stack.Screen name="SendCountry" component={SendCountryScreen} />
+          <Stack.Screen name="PhoneNumber" component={PhoneNumberScreen} />
+          <Stack.Screen name="OTPScreen" component={OTPScreen} />
+          <Stack.Screen name="ConfirmEmail" component={ConfirmEmailScreen} />
+          <Stack.Screen name="PersonalDetails" component={PersonalDetailsScreen} />
+
         </Stack.Navigator>
       </NavigationContainer>
     </GestureHandlerRootView>
