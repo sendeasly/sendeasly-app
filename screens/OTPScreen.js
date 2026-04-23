@@ -119,7 +119,7 @@ export default function OTPScreen({ navigation, route }) {
         </View>
 
         <Text style={styles.otpHint}>
-          Demo code: {otp}
+          Demo code: {123456}
         </Text>
 
       </View>
