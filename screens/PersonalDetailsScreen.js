@@ -25,54 +25,51 @@ const nchiZote = [
   { code: 'AE', jina: 'UAE', bendera: '🇦🇪' },
 ];
 
+const miezi = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const jinsia = ['Male', 'Female', 'Prefer not to say'];
+const sasa = new Date().getFullYear();
+const miaka = Array.from({length: 82}, (_, i) => sasa - 18 - i);
+const siku = Array.from({length: 31}, (_, i) => i + 1);
 
 export default function PersonalDetailsScreen({ navigation, route }) {
   const { email, nywila, nchiYake, nchiTuma, simu } = route.params || {};
   const [jinaKwanza, setJinaKwanza] = useState('');
   const [jinaKati, setJinaKati] = useState('');
   const [jinaMwisho, setJinaMwisho] = useState('');
-  const [umri, setUmri] = useState('');
-  const [siku, setSiku] = useState(null);
-  const [mwezi, setMwezi] = useState(null);
-  const [mwaka, setMwaka] = useState(null);
   const [jinsiYake, setJinsiYake] = useState('');
   const [nchiChaguliwa, setNchiChaguliwa] = useState(nchiYake || null);
+  const [tarehe, setTarehe] = useState({ siku: null, mwezi: null, mwaka: null });
   const [modalNchi, setModalNchi] = useState(false);
   const [modalJinsi, setModalJinsi] = useState(false);
+  const [modalTarehe, setModalTarehe] = useState(false);
   const [inapakia, setInapakia] = useState(false);
   const [kosa, setKosa] = useState('');
+
+  const tareheMaandishi = tarehe.siku && tarehe.mwezi && tarehe.mwaka
+    ? `${String(tarehe.siku).padStart(2,'0')} ${miezi[tarehe.mwezi-1]} ${tarehe.mwaka}`
+    : null;
 
   async function kamilisha() {
     if (!jinaKwanza) { setKosa('First name is required'); return; }
     if (!jinaMwisho) { setKosa('Last name is required'); return; }
-    if (!siku || !mwezi || !mwaka) { setKosa('Please select your date of birth'); return; }
-    const umriHalisi = new Date().getFullYear() - mwaka;
-    if (umriHalisi < 18) { setKosa('You must be at least 18 years old'); return; }
-    const umri = umriHalisi.toString();
+    if (!tarehe.siku || !tarehe.mwezi || !tarehe.mwaka) { setKosa('Please select your date of birth'); return; }
     if (!jinsiYake) { setKosa('Please select your gender'); return; }
-
     setKosa('');
     setInapakia(true);
-
     try {
+      const umri = (sasa - tarehe.mwaka).toString();
       const jibu = await fetch('https://money-transfer-backend-production.up.railway.app/sajili', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           jina: jinaKwanza + ' ' + jinaMwisho,
-          email,
-          nywila,
-          simu,
+          email, nywila, simu,
           nchiYake: nchiChaguliwa?.jina,
           nchiTuma: nchiTuma?.jina,
-          jinsi: jinsiYake,
-          umri,
+          jinsi: jinsiYake, umri,
         }),
       });
-
       const data = await jibu.json();
-
       if (jibu.ok) {
         await AsyncStorage.setItem('mtumiaji', JSON.stringify(data.mtumiaji));
         navigation.reset({ index: 0, routes: [{ name: 'Main' }] });
@@ -82,7 +79,6 @@ export default function PersonalDetailsScreen({ navigation, route }) {
     } catch (e) {
       setKosa('Network error. Please try again.');
     }
-
     setInapakia(false);
   }
 
@@ -90,23 +86,106 @@ export default function PersonalDetailsScreen({ navigation, route }) {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#880e4f" />
 
+      {/* Modal Tarehe */}
+      <Modal visible={modalTarehe} transparent animationType="slide" onRequestClose={() => setModalTarehe(false)}>
+        <View style={styles.modalBg}>
+          <View style={styles.modalKadi}>
+            <Text style={styles.modalKichwa}>Select Date of Birth</Text>
+
+            <View style={styles.pickerRow}>
+              {/* Day */}
+              <View style={styles.pickerCol}>
+                <Text style={styles.pickerLebo}>Day</Text>
+                <FlatList
+                  data={siku}
+                  keyExtractor={i => i.toString()}
+                  showsVerticalScrollIndicator={false}
+                  style={styles.pickerList}
+                  renderItem={({item}) => (
+                    <TouchableOpacity
+                      style={[styles.pickerItem, tarehe.siku === item && styles.pickerItemChaguliwa]}
+                      onPress={() => setTarehe(p => ({...p, siku: item}))}
+                    >
+                      <Text style={[styles.pickerManeno, tarehe.siku === item && styles.pickerManenoChaguliwa]}>
+                        {String(item).padStart(2,'0')}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
+
+              {/* Month */}
+              <View style={[styles.pickerCol, {flex: 1.8}]}>
+                <Text style={styles.pickerLebo}>Month</Text>
+                <FlatList
+                  data={miezi}
+                  keyExtractor={i => i}
+                  showsVerticalScrollIndicator={false}
+                  style={styles.pickerList}
+                  renderItem={({item, index}) => (
+                    <TouchableOpacity
+                      style={[styles.pickerItem, tarehe.mwezi === index+1 && styles.pickerItemChaguliwa]}
+                      onPress={() => setTarehe(p => ({...p, mwezi: index+1}))}
+                    >
+                      <Text style={[styles.pickerManeno, tarehe.mwezi === index+1 && styles.pickerManenoChaguliwa]}>
+                        {item}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
+
+              {/* Year */}
+              <View style={styles.pickerCol}>
+                <Text style={styles.pickerLebo}>Year</Text>
+                <FlatList
+                  data={miaka}
+                  keyExtractor={i => i.toString()}
+                  showsVerticalScrollIndicator={false}
+                  style={styles.pickerList}
+                  renderItem={({item}) => (
+                    <TouchableOpacity
+                      style={[styles.pickerItem, tarehe.mwaka === item && styles.pickerItemChaguliwa]}
+                      onPress={() => setTarehe(p => ({...p, mwaka: item}))}
+                    >
+                      <Text style={[styles.pickerManeno, tarehe.mwaka === item && styles.pickerManenoChaguliwa]}>
+                        {item}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
+            </View>
+
+            <TouchableOpacity
+              style={styles.modalKitufe}
+              onPress={() => setModalTarehe(false)}
+            >
+              <Text style={styles.modalKitufeManeno}>
+                {tareheMaandishi ? 'Confirm — ' + tareheMaandishi : 'Confirm'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
       {/* Modal Nchi */}
       <Modal visible={modalNchi} transparent animationType="slide" onRequestClose={() => setModalNchi(false)}>
         <View style={styles.modalBg}>
           <View style={styles.modalKadi}>
-            <Text style={styles.modalKichwa}>Select Country of Residence</Text>
+            <Text style={styles.modalKichwa}>Country of Residence</Text>
             <FlatList
               data={nchiZote}
               keyExtractor={item => item.code}
-              renderItem={({ item }) => (
+              renderItem={({item}) => (
                 <TouchableOpacity
-                  style={styles.modalItem}
+                  style={[styles.nchiItem, nchiChaguliwa?.code === item.code && styles.nchiItemChaguliwa]}
                   onPress={() => { setNchiChaguliwa(item); setModalNchi(false); }}
                 >
-                  <Text style={styles.modalBendera}>{item.bendera}</Text>
-                  <Text style={styles.modalJina}>{item.jina}</Text>
+                  <Text style={styles.nchiBendera}>{item.bendera}</Text>
+                  <Text style={styles.nchiJina}>{item.jina}</Text>
                   {nchiChaguliwa?.code === item.code && (
-                    <Text style={{ color: '#880e4f', fontWeight: 'bold' }}>✓</Text>
+                    <Text style={styles.check}>✓</Text>
                   )}
                 </TouchableOpacity>
               )}
@@ -126,11 +205,11 @@ export default function PersonalDetailsScreen({ navigation, route }) {
             {jinsia.map(j => (
               <TouchableOpacity
                 key={j}
-                style={styles.modalItem}
+                style={[styles.nchiItem, jinsiYake === j && styles.nchiItemChaguliwa]}
                 onPress={() => { setJinsiYake(j); setModalJinsi(false); }}
               >
-                <Text style={styles.modalJina}>{j}</Text>
-                {jinsiYake === j && <Text style={{ color: '#880e4f', fontWeight: 'bold' }}>✓</Text>}
+                <Text style={styles.nchiJina}>{j}</Text>
+                {jinsiYake === j && <Text style={styles.check}>✓</Text>}
               </TouchableOpacity>
             ))}
             <TouchableOpacity style={styles.modalFunga} onPress={() => setModalJinsi(false)}>
@@ -171,7 +250,6 @@ export default function PersonalDetailsScreen({ navigation, route }) {
 
         <View style={styles.form}>
 
-          {/* First Name */}
           <Text style={styles.lebo}>First Name *</Text>
           <View style={styles.ingizoWrapper}>
             <TextInput
@@ -183,7 +261,6 @@ export default function PersonalDetailsScreen({ navigation, route }) {
             />
           </View>
 
-          {/* Middle Name */}
           <Text style={styles.lebo}>Middle Name <Text style={styles.optional}>(optional)</Text></Text>
           <View style={styles.ingizoWrapper}>
             <TextInput
@@ -195,7 +272,6 @@ export default function PersonalDetailsScreen({ navigation, route }) {
             />
           </View>
 
-          {/* Last Name */}
           <Text style={styles.lebo}>Last Name *</Text>
           <View style={styles.ingizoWrapper}>
             <TextInput
@@ -207,78 +283,29 @@ export default function PersonalDetailsScreen({ navigation, route }) {
             />
           </View>
 
-          {/* Date of Birth */}
           <Text style={styles.lebo}>Date of Birth *</Text>
-          <View style={styles.dateWrapper}>
-            {/* Day */}
-            <View style={styles.dateBox}>
-              <Text style={styles.dateLebo}>Day</Text>
-              <ScrollView style={styles.dateScroll} showsVerticalScrollIndicator={false}>
-                {Array.from({length: 31}, (_, i) => i + 1).map(d => (
-                  <TouchableOpacity
-                    key={d}
-                    style={[styles.dateItem, siku === d && styles.dateItemChaguliwa]}
-                    onPress={() => setSiku(d)}
-                  >
-                    <Text style={[styles.dateManeno, siku === d && styles.dateManenoChaguliwa]}>
-                      {String(d).padStart(2, '0')}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            </View>
+          <TouchableOpacity style={styles.dropdownWrapper} onPress={() => setModalTarehe(true)}>
+            <Text style={styles.calendarIcon}>📅</Text>
+            <Text style={[styles.dropdownManeno, !tareheMaandishi && styles.placeholder]}>
+              {tareheMaandishi || 'Select date of birth'}
+            </Text>
+            <Text style={styles.chevron}>▾</Text>
+          </TouchableOpacity>
 
-            {/* Month */}
-            <View style={styles.dateBox}>
-              <Text style={styles.dateLebo}>Month</Text>
-              <ScrollView style={styles.dateScroll} showsVerticalScrollIndicator={false}>
-                {['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'].map((m, i) => (
-                  <TouchableOpacity
-                    key={m}
-                    style={[styles.dateItem, mwezi === i+1 && styles.dateItemChaguliwa]}
-                    onPress={() => setMwezi(i+1)}
-                  >
-                    <Text style={[styles.dateManeno, mwezi === i+1 && styles.dateManenoChaguliwa]}>
-                      {m}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            </View>
-
-            {/* Year */}
-            <View style={styles.dateBox}>
-              <Text style={styles.dateLebo}>Year</Text>
-              <ScrollView style={styles.dateScroll} showsVerticalScrollIndicator={false}>
-                {Array.from({length: 82}, (_, i) => new Date().getFullYear() - 18 - i).map(y => (
-                  <TouchableOpacity
-                    key={y}
-                    style={[styles.dateItem, mwaka === y && styles.dateItemChaguliwa]}
-                    onPress={() => setMwaka(y)}
-                  >
-                    <Text style={[styles.dateManeno, mwaka === y && styles.dateManenoChaguliwa]}>
-                      {y}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            </View>
-          </View>
-
-          {/* Gender */}
           <Text style={styles.lebo}>Gender *</Text>
           <TouchableOpacity style={styles.dropdownWrapper} onPress={() => setModalJinsi(true)}>
+            <Text style={styles.calendarIcon}>👤</Text>
             <Text style={[styles.dropdownManeno, !jinsiYake && styles.placeholder]}>
               {jinsiYake || 'Select gender'}
             </Text>
             <Text style={styles.chevron}>▾</Text>
           </TouchableOpacity>
 
-          {/* Country of Residence */}
           <Text style={styles.lebo}>Country of Residence *</Text>
           <TouchableOpacity style={styles.dropdownWrapper} onPress={() => setModalNchi(true)}>
-            <Text style={styles.dropdownManeno}>
-              {nchiChaguliwa ? nchiChaguliwa.bendera + ' ' + nchiChaguliwa.jina : 'Select country'}
+            <Text style={styles.calendarIcon}>{nchiChaguliwa?.bendera || '🌍'}</Text>
+            <Text style={[styles.dropdownManeno, !nchiChaguliwa && styles.placeholder]}>
+              {nchiChaguliwa?.jina || 'Select country'}
             </Text>
             <Text style={styles.chevron}>▾</Text>
           </TouchableOpacity>
@@ -320,29 +347,40 @@ const styles = StyleSheet.create({
   form: { paddingHorizontal: 20 },
   lebo: { color: 'rgba(255,255,255,0.8)', fontSize: 13, fontWeight: '600', marginBottom: 8, marginTop: 16 },
   optional: { color: 'rgba(255,255,255,0.4)', fontWeight: '400' },
-  ingizoWrapper: { backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.2)', marginBottom: 4 },
+  ingizoWrapper: { backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.2)' },
   ingizo: { color: 'white', fontSize: 16, padding: 14 },
-  dropdownWrapper: { backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.2)', padding: 14, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 },
-  dropdownManeno: { color: 'white', fontSize: 16 },
+  dropdownWrapper: { backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.2)', padding: 14, flexDirection: 'row', alignItems: 'center', gap: 10 },
+  calendarIcon: { fontSize: 20 },
+  dropdownManeno: { flex: 1, color: 'white', fontSize: 15 },
   placeholder: { color: 'rgba(255,255,255,0.4)' },
   chevron: { color: 'rgba(255,255,255,0.6)', fontSize: 14 },
   continueKitufe: { backgroundColor: 'white', borderRadius: 30, padding: 18, alignItems: 'center', marginHorizontal: 20, marginTop: 24 },
   kitufeDisabled: { opacity: 0.7 },
   continueManeno: { color: '#880e4f', fontWeight: 'bold', fontSize: 16 },
-  modalBg: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
-  modalKadi: { backgroundColor: 'white', borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 20, maxHeight: '70%' },
-  modalKichwa: { fontSize: 18, fontWeight: 'bold', color: '#880e4f', marginBottom: 16, textAlign: 'center' },
-  modalItem: { flexDirection: 'row', alignItems: 'center', padding: 14, borderBottomWidth: 1, borderBottomColor: '#f5f5f5', gap: 12 },
-  modalBendera: { fontSize: 24 },
-  modalJina: { flex: 1, fontSize: 15, color: '#1a1a1a', fontWeight: '500' },
-  modalFunga: { backgroundColor: '#f5f5f5', borderRadius: 12, padding: 14, alignItems: 'center', marginTop: 12 },
-  modalFungaManeno: { color: '#880e4f', fontWeight: 'bold', fontSize: 16 },
-  dateWrapper: { flexDirection: 'row', gap: 8, marginBottom: 4 },
-  dateBox: { flex: 1, backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.2)', overflow: 'hidden' },
-  dateLebo: { color: 'rgba(255,255,255,0.6)', fontSize: 11, fontWeight: '600', textAlign: 'center', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.1)', textTransform: 'uppercase' },
-  dateScroll: { height: 150 },
-  dateItem: { paddingVertical: 10, alignItems: 'center' },
-  dateItemChaguliwa: { backgroundColor: 'rgba(255,255,255,0.25)' },
-  dateManeno: { color: 'rgba(255,255,255,0.7)', fontSize: 15 },
-  dateManenoChaguliwa: { color: 'white', fontWeight: 'bold', fontSize: 16 },
+
+  // Modal
+  modalBg: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'flex-end' },
+  modalKadi: { backgroundColor: '#1a0a2e', borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 20, maxHeight: '80%' },
+  modalKichwa: { fontSize: 18, fontWeight: 'bold', color: 'white', marginBottom: 16, textAlign: 'center' },
+
+  // Date Picker
+  pickerRow: { flexDirection: 'row', gap: 8, marginBottom: 16 },
+  pickerCol: { flex: 1 },
+  pickerLebo: { color: 'rgba(255,255,255,0.5)', fontSize: 11, fontWeight: '600', textAlign: 'center', marginBottom: 8, textTransform: 'uppercase' },
+  pickerList: { height: 200 },
+  pickerItem: { paddingVertical: 12, paddingHorizontal: 4, alignItems: 'center', borderRadius: 8, marginBottom: 2 },
+  pickerItemChaguliwa: { backgroundColor: '#c2185b' },
+  pickerManeno: { color: 'rgba(255,255,255,0.6)', fontSize: 14 },
+  pickerManenoChaguliwa: { color: 'white', fontWeight: 'bold', fontSize: 15 },
+  modalKitufe: { backgroundColor: '#c2185b', borderRadius: 30, padding: 16, alignItems: 'center', marginTop: 8 },
+  modalKitufeManeno: { color: 'white', fontWeight: 'bold', fontSize: 15 },
+
+  // Country/Gender Modal
+  nchiItem: { flexDirection: 'row', alignItems: 'center', padding: 14, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.1)', gap: 12 },
+  nchiItemChaguliwa: { backgroundColor: 'rgba(194,24,91,0.3)' },
+  nchiBendera: { fontSize: 24 },
+  nchiJina: { flex: 1, fontSize: 15, color: 'white', fontWeight: '500' },
+  check: { color: '#c2185b', fontWeight: 'bold', fontSize: 18 },
+  modalFunga: { backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 12, padding: 14, alignItems: 'center', marginTop: 12 },
+  modalFungaManeno: { color: 'white', fontWeight: 'bold', fontSize: 16 },
 });
