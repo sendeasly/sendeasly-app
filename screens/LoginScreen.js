@@ -43,7 +43,7 @@ export default function LoginScreen({ navigation }) {
     }
     setInapakia(true);
     try {
-      const jibu = await fetch('http://100.115.92.207:5001/ingia', {
+      const jibu = await fetch('http://100.115.92.203:5001/ingia', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, nywila }),

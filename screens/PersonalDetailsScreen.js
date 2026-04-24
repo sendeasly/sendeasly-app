@@ -50,7 +50,7 @@ export default function PersonalDetailsScreen({ navigation, route }) {
     setInapakia(true);
 
     try {
-      const jibu = await fetch('http://100.115.92.207:5001/sajili', {
+      const jibu = await fetch('http://100.115.92.203:5001/sajili', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
