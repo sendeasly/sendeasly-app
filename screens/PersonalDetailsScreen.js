@@ -33,6 +33,9 @@ export default function PersonalDetailsScreen({ navigation, route }) {
   const [jinaKati, setJinaKati] = useState('');
   const [jinaMwisho, setJinaMwisho] = useState('');
   const [umri, setUmri] = useState('');
+  const [siku, setSiku] = useState(null);
+  const [mwezi, setMwezi] = useState(null);
+  const [mwaka, setMwaka] = useState(null);
   const [jinsiYake, setJinsiYake] = useState('');
   const [nchiChaguliwa, setNchiChaguliwa] = useState(nchiYake || null);
   const [modalNchi, setModalNchi] = useState(false);
@@ -43,7 +46,10 @@ export default function PersonalDetailsScreen({ navigation, route }) {
   async function kamilisha() {
     if (!jinaKwanza) { setKosa('First name is required'); return; }
     if (!jinaMwisho) { setKosa('Last name is required'); return; }
-    if (!umri || parseInt(umri) < 18) { setKosa('You must be at least 18 years old'); return; }
+    if (!siku || !mwezi || !mwaka) { setKosa('Please select your date of birth'); return; }
+    const umriHalisi = new Date().getFullYear() - mwaka;
+    if (umriHalisi < 18) { setKosa('You must be at least 18 years old'); return; }
+    const umri = umriHalisi.toString();
     if (!jinsiYake) { setKosa('Please select your gender'); return; }
 
     setKosa('');
@@ -201,18 +207,62 @@ export default function PersonalDetailsScreen({ navigation, route }) {
             />
           </View>
 
-          {/* Age */}
-          <Text style={styles.lebo}>Age *</Text>
-          <View style={styles.ingizoWrapper}>
-            <TextInput
-              style={styles.ingizo}
-              placeholder="Your age"
-              placeholderTextColor="rgba(255,255,255,0.4)"
-              value={umri}
-              onChangeText={setUmri}
-              keyboardType="numeric"
-              maxLength={3}
-            />
+          {/* Date of Birth */}
+          <Text style={styles.lebo}>Date of Birth *</Text>
+          <View style={styles.dateWrapper}>
+            {/* Day */}
+            <View style={styles.dateBox}>
+              <Text style={styles.dateLebo}>Day</Text>
+              <ScrollView style={styles.dateScroll} showsVerticalScrollIndicator={false}>
+                {Array.from({length: 31}, (_, i) => i + 1).map(d => (
+                  <TouchableOpacity
+                    key={d}
+                    style={[styles.dateItem, siku === d && styles.dateItemChaguliwa]}
+                    onPress={() => setSiku(d)}
+                  >
+                    <Text style={[styles.dateManeno, siku === d && styles.dateManenoChaguliwa]}>
+                      {String(d).padStart(2, '0')}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+
+            {/* Month */}
+            <View style={styles.dateBox}>
+              <Text style={styles.dateLebo}>Month</Text>
+              <ScrollView style={styles.dateScroll} showsVerticalScrollIndicator={false}>
+                {['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'].map((m, i) => (
+                  <TouchableOpacity
+                    key={m}
+                    style={[styles.dateItem, mwezi === i+1 && styles.dateItemChaguliwa]}
+                    onPress={() => setMwezi(i+1)}
+                  >
+                    <Text style={[styles.dateManeno, mwezi === i+1 && styles.dateManenoChaguliwa]}>
+                      {m}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+
+            {/* Year */}
+            <View style={styles.dateBox}>
+              <Text style={styles.dateLebo}>Year</Text>
+              <ScrollView style={styles.dateScroll} showsVerticalScrollIndicator={false}>
+                {Array.from({length: 82}, (_, i) => new Date().getFullYear() - 18 - i).map(y => (
+                  <TouchableOpacity
+                    key={y}
+                    style={[styles.dateItem, mwaka === y && styles.dateItemChaguliwa]}
+                    onPress={() => setMwaka(y)}
+                  >
+                    <Text style={[styles.dateManeno, mwaka === y && styles.dateManenoChaguliwa]}>
+                      {y}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
           </View>
 
           {/* Gender */}
@@ -287,4 +337,12 @@ const styles = StyleSheet.create({
   modalJina: { flex: 1, fontSize: 15, color: '#1a1a1a', fontWeight: '500' },
   modalFunga: { backgroundColor: '#f5f5f5', borderRadius: 12, padding: 14, alignItems: 'center', marginTop: 12 },
   modalFungaManeno: { color: '#880e4f', fontWeight: 'bold', fontSize: 16 },
+  dateWrapper: { flexDirection: 'row', gap: 8, marginBottom: 4 },
+  dateBox: { flex: 1, backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.2)', overflow: 'hidden' },
+  dateLebo: { color: 'rgba(255,255,255,0.6)', fontSize: 11, fontWeight: '600', textAlign: 'center', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.1)', textTransform: 'uppercase' },
+  dateScroll: { height: 150 },
+  dateItem: { paddingVertical: 10, alignItems: 'center' },
+  dateItemChaguliwa: { backgroundColor: 'rgba(255,255,255,0.25)' },
+  dateManeno: { color: 'rgba(255,255,255,0.7)', fontSize: 15 },
+  dateManenoChaguliwa: { color: 'white', fontWeight: 'bold', fontSize: 16 },
 });
