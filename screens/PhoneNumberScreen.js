@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import {
-    FlatList,
-    Modal,
-    ScrollView, StatusBar,
-    StyleSheet,
-    Text, TextInput, TouchableOpacity,
-    View,
+  FlatList,
+  Modal,
+  ScrollView, StatusBar,
+  StyleSheet,
+  Text, TextInput, TouchableOpacity,
+  View,
 } from 'react-native';
 
 const countryCodesData = [
@@ -39,7 +39,7 @@ export default function PhoneNumberScreen({ navigation, route }) {
     setInatuma(true);
     await new Promise(r => setTimeout(r, 1500));
     setInatuma(false);
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otp = '123456';
     navigation.navigate('OTPScreen', {
       email, nywila, nchiYake, nchiTuma,
       simu: nchi.code + ' ' + simu,

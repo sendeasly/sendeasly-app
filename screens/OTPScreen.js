@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
-    StatusBar,
-    StyleSheet,
-    Text, TextInput, TouchableOpacity,
-    View,
+  StatusBar,
+  StyleSheet,
+  Text, TextInput, TouchableOpacity,
+  View,
 } from 'react-native';
 
 export default function OTPScreen({ navigation, route }) {
@@ -119,7 +119,7 @@ export default function OTPScreen({ navigation, route }) {
         </View>
 
         <Text style={styles.otpHint}>
-          Demo code: {123456}
+          Demo code: {otp}
         </Text>
 
       </View>

@@ -1,12 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
 import {
-    FlatList,
-    Modal,
-    ScrollView, StatusBar,
-    StyleSheet,
-    Text, TextInput, TouchableOpacity,
-    View,
+  FlatList,
+  Modal,
+  ScrollView, StatusBar,
+  StyleSheet,
+  Text, TextInput, TouchableOpacity,
+  View,
 } from 'react-native';
 
 const nchiZote = [
@@ -50,7 +50,7 @@ export default function PersonalDetailsScreen({ navigation, route }) {
     setInapakia(true);
 
     try {
-      const jibu = await fetch('http://localhost:5001/sajili', {
+      const jibu = await fetch('http://100.115.92.207:5001/sajili', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
